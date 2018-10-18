@@ -1,4 +1,4 @@
-package vip.mystery0.mpreference
+package vip.mystery0.mpreferencedemo
 
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
@@ -7,6 +7,8 @@ import android.view.Menu
 import android.view.MenuItem
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.content_main.*
+import vip.mystery0.mpreference.R
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,6 +16,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        preference.parseResource("pre.xml")
 
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)

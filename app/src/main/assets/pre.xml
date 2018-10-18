@@ -1,0 +1,8 @@
+<PageMPreference>
+    <TextMPreference>
+        text
+    </TextMPreference>
+    <SwitchMPreference>
+        switch
+    </SwitchMPreference>
+</PageMPreference>
