@@ -1,8 +1,6 @@
 <PageMPreference>
-    <TextMPreference>
-        text
-    </TextMPreference>
-    <SwitchMPreference>
-        switch
-    </SwitchMPreference>
+    <TextMPreference title="title_text"
+                     summary="summary_text"/>
+    <SwitchMPreference title="title_switch"
+                       summary="summary_switch"/>
 </PageMPreference>
