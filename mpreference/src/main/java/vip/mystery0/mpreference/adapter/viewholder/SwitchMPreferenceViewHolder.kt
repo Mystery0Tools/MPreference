@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.widget.Switch
 import android.widget.TextView
 import vip.mystery0.mpreference.R
+import vip.mystery0.mpreference.base.BaseMPreference
 import vip.mystery0.mpreference.base.BaseMPreferenceViewHolder
 import vip.mystery0.mpreference.config.MPreferenceConfig
 import vip.mystery0.mpreference.impl.SwitchMPreference
@@ -24,4 +25,6 @@ class SwitchMPreferenceViewHolder(layoutInflater: LayoutInflater) :
         switchButton.isEnabled = base.isEnable
         switchButton.isChecked = base.isChecked
     }
+
+
 }

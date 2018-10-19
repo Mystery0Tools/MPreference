@@ -9,6 +9,7 @@ import vip.mystery0.mpreference.adapter.viewholder.TextMPreferenceViewHolder
 import vip.mystery0.mpreference.base.BaseMPreference
 import vip.mystery0.mpreference.base.BaseMPreferenceViewHolder
 import vip.mystery0.mpreference.config.MPreferenceConfig
+import vip.mystery0.mpreference.impl.SwitchMPreference
 import vip.mystery0.mpreference.impl.TextMPreference
 
 class MPreferenceAdapter(
@@ -18,7 +19,8 @@ class MPreferenceAdapter(
 ) :
     RecyclerView.Adapter<BaseMPreferenceViewHolder<out BaseMPreference>>() {
     private val layoutInflater = LayoutInflater.from(context)
-    lateinit var clickListener: (Int, BaseMPreference) -> Unit
+    lateinit var clickListener: (BaseMPreference) -> Unit
+    lateinit var valueChangeListener: (BaseMPreference) -> Unit
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -36,15 +38,15 @@ class MPreferenceAdapter(
         holder: BaseMPreferenceViewHolder<out BaseMPreference>, position: Int
     ) {
         when (holder) {
-            is TextMPreferenceViewHolder -> {
-                holder.layout(context, config, list[position] as TextMPreference)
-            }
+            is TextMPreferenceViewHolder -> holder.layout(context, config, list[position] as TextMPreference)
+            is SwitchMPreferenceViewHolder -> holder.layout(context, config, list[position] as SwitchMPreference)
         }
     }
 
     override fun getItemViewType(position: Int): Int =
         when (list[position]) {
             is TextMPreference -> TYPE_TEXT
+            is SwitchMPreference -> TYPE_SWITCH
             else -> UNKNOWN
         }
 
