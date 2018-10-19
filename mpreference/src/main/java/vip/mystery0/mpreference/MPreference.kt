@@ -19,8 +19,8 @@ import java.io.InputStream
 class MPreference : RecyclerView {
     private val originList = ArrayList<BaseMPreference>()
     private val showList = ArrayList<BaseMPreference>()
-    private val adapter = MPreferenceAdapter(context, showList)
     private val config = MPreferenceConfig()
+    private val adapter = MPreferenceAdapter(context, showList, config)
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -73,7 +73,8 @@ class MPreference : RecyclerView {
                     pageMPreference.parseAttribute(
                         context,
                         pullParser.getAttributeName(i),
-                        pullParser.getAttributeValue(i)
+                        pullParser.getAttributeValue(i),
+                        config
                     )
                 }
                 pageMPreference
@@ -84,7 +85,8 @@ class MPreference : RecyclerView {
                     switchMPreference.parseAttribute(
                         context,
                         pullParser.getAttributeName(i),
-                        pullParser.getAttributeValue(i)
+                        pullParser.getAttributeValue(i),
+                        config
                     )
                 }
                 switchMPreference
@@ -95,7 +97,8 @@ class MPreference : RecyclerView {
                     textMPreference.parseAttribute(
                         context,
                         pullParser.getAttributeName(i),
-                        pullParser.getAttributeValue(i)
+                        pullParser.getAttributeValue(i),
+                        config
                     )
                 }
                 textMPreference

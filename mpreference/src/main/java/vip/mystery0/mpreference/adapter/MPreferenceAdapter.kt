@@ -4,12 +4,18 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import vip.mystery0.mpreference.adapter.viewholder.SwitchMPreferenceViewHolder
 import vip.mystery0.mpreference.adapter.viewholder.TextMPreferenceViewHolder
 import vip.mystery0.mpreference.base.BaseMPreference
 import vip.mystery0.mpreference.base.BaseMPreferenceViewHolder
+import vip.mystery0.mpreference.config.MPreferenceConfig
 import vip.mystery0.mpreference.impl.TextMPreference
 
-class MPreferenceAdapter(context: Context, private val list: List<BaseMPreference>) :
+class MPreferenceAdapter(
+    private val context: Context,
+    private val list: List<BaseMPreference>,
+    private val config: MPreferenceConfig
+) :
     RecyclerView.Adapter<BaseMPreferenceViewHolder<out BaseMPreference>>() {
     private val layoutInflater = LayoutInflater.from(context)
     lateinit var clickListener: (Int, BaseMPreference) -> Unit
@@ -20,6 +26,7 @@ class MPreferenceAdapter(context: Context, private val list: List<BaseMPreferenc
     ): BaseMPreferenceViewHolder<out BaseMPreference> =
         when (viewType) {
             TYPE_TEXT -> TextMPreferenceViewHolder(layoutInflater)
+            TYPE_SWITCH -> SwitchMPreferenceViewHolder(layoutInflater)
             else -> throw NullPointerException("null")
         }
 
@@ -30,7 +37,7 @@ class MPreferenceAdapter(context: Context, private val list: List<BaseMPreferenc
     ) {
         when (holder) {
             is TextMPreferenceViewHolder -> {
-                holder.layout(list[position] as TextMPreference)
+                holder.layout(context, config, list[position] as TextMPreference)
             }
         }
     }
@@ -44,5 +51,6 @@ class MPreferenceAdapter(context: Context, private val list: List<BaseMPreferenc
     companion object {
         private const val UNKNOWN = -1
         private const val TYPE_TEXT = 1
+        private const val TYPE_SWITCH = 2
     }
 }

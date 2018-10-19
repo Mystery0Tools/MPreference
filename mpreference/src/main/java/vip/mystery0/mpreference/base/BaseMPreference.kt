@@ -3,6 +3,7 @@ package vip.mystery0.mpreference.base
 import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
+import vip.mystery0.mpreference.config.MPreferenceConfig
 import vip.mystery0.mpreference.constant.NodeAttributeConstant
 
 abstract class BaseMPreference {
@@ -11,12 +12,19 @@ abstract class BaseMPreference {
     lateinit var summary: String
     lateinit var id: String
 
-    open fun parseAttribute(context: Context, attributeName: String, attributeValue: String) {
+    open fun parseAttribute(
+        context: Context,
+        attributeName: String,
+        attributeValue: String,
+        config: MPreferenceConfig
+    ) {
         when (attributeName) {
             NodeAttributeConstant.ID -> id = attributeValue
             NodeAttributeConstant.TITLE -> title = attributeValue
             NodeAttributeConstant.SUMMARY -> summary = attributeValue
             NodeAttributeConstant.ICON -> {
+                if (!config.showIcon)
+                    return
                 try {
                     val temp = attributeValue.substring(1).split('/')
                     val folder = temp[0]
