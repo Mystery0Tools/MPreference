@@ -4,9 +4,6 @@ apply plugin: 'kotlin-android'
 android {
     compileSdkVersion 28
 
-    dataBinding {
-        enabled = true
-    }
     defaultConfig {
         minSdkVersion 17
         targetSdkVersion 28

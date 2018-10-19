@@ -5,4 +5,7 @@ object NodeAttributeConstant {
     const val CATEGORY = "category"
     const val ID = "id"
     const val SUMMARY = "summary"
+    const val ICON = "icon"
+    const val IS_ENABLE = "isEnable"
+    const val IS_CHECKED = "isChecked"
 }

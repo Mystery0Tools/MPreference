@@ -1,5 +1,6 @@
 package vip.mystery0.mpreference.impl
 
+import android.content.Context
 import vip.mystery0.mpreference.base.BaseMPreference
 import vip.mystery0.mpreference.constant.NodeAttributeConstant
 
@@ -8,12 +9,12 @@ class SwitchMPreference : BaseMPreference() {
     var isEnable: Boolean = true
     var isChecked: Boolean = false
 
-    override fun parseAttribute(attributeName: String, attributeValue: String) {
+    override fun parseAttribute(context: Context, attributeName: String, attributeValue: String) {
         when (attributeName) {
-            NodeAttributeConstant.ID -> id = attributeValue
-            NodeAttributeConstant.TITLE -> id = attributeValue
-            NodeAttributeConstant.SUMMARY -> summary = attributeValue
             NodeAttributeConstant.CATEGORY -> category = attributeValue
+            NodeAttributeConstant.IS_ENABLE -> isEnable = attributeValue == "true"
+            NodeAttributeConstant.IS_CHECKED -> isChecked = attributeValue == "true"
+            else -> super.parseAttribute(context, attributeName, attributeValue)
         }
     }
 }

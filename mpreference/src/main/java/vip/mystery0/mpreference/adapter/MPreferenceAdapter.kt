@@ -7,32 +7,30 @@ import androidx.recyclerview.widget.RecyclerView
 import vip.mystery0.mpreference.adapter.viewholder.TextMPreferenceViewHolder
 import vip.mystery0.mpreference.base.BaseMPreference
 import vip.mystery0.mpreference.base.BaseMPreferenceViewHolder
-import vip.mystery0.mpreference.databinding.LayoutMpreferenceTextBinding
 import vip.mystery0.mpreference.impl.TextMPreference
-import java.lang.NullPointerException
 
 class MPreferenceAdapter(context: Context, private val list: List<BaseMPreference>) :
-    RecyclerView.Adapter<BaseMPreferenceViewHolder>() {
+    RecyclerView.Adapter<BaseMPreferenceViewHolder<out BaseMPreference>>() {
     private val layoutInflater = LayoutInflater.from(context)
     lateinit var clickListener: (Int, BaseMPreference) -> Unit
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): BaseMPreferenceViewHolder =
+    ): BaseMPreferenceViewHolder<out BaseMPreference> =
         when (viewType) {
-            TYPE_TEXT -> TextMPreferenceViewHolder(LayoutMpreferenceTextBinding.inflate(layoutInflater))
+            TYPE_TEXT -> TextMPreferenceViewHolder(layoutInflater)
             else -> throw NullPointerException("null")
         }
 
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(
-        holder: BaseMPreferenceViewHolder, position: Int
+        holder: BaseMPreferenceViewHolder<out BaseMPreference>, position: Int
     ) {
         when (holder) {
             is TextMPreferenceViewHolder -> {
-                holder.layout(holder.binding as LayoutMpreferenceTextBinding, list[position] as TextMPreference)
+                holder.layout(list[position] as TextMPreference)
             }
         }
     }

@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.util.Xml
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.xmlpull.v1.XmlPullParser
 import vip.mystery0.mpreference.adapter.MPreferenceAdapter
@@ -30,10 +31,11 @@ class MPreference : RecyclerView {
     private fun init() {
         if (config.showDivider)
             addItemDecoration(DividerItemDecoration(context, LinearLayout.VERTICAL))
+        layoutManager = LinearLayoutManager(context)
         setAdapter(adapter)
     }
 
-    fun parseResource(fileName: String) {
+    fun parseAssertResource(fileName: String) {
         parseInputStream(context.assets.open(fileName))
     }
 
@@ -68,21 +70,33 @@ class MPreference : RecyclerView {
             PageMPreference::class.java.simpleName -> {
                 val pageMPreference = PageMPreference()
                 for (i in 0 until pullParser.attributeCount) {
-                    pageMPreference.parseAttribute(pullParser.getAttributeName(i), pullParser.getAttributeValue(i))
+                    pageMPreference.parseAttribute(
+                        context,
+                        pullParser.getAttributeName(i),
+                        pullParser.getAttributeValue(i)
+                    )
                 }
                 pageMPreference
             }
             SwitchMPreference::class.java.simpleName -> {
                 val switchMPreference = SwitchMPreference()
                 for (i in 0 until pullParser.attributeCount) {
-                    switchMPreference.parseAttribute(pullParser.getAttributeName(i), pullParser.getAttributeValue(i))
+                    switchMPreference.parseAttribute(
+                        context,
+                        pullParser.getAttributeName(i),
+                        pullParser.getAttributeValue(i)
+                    )
                 }
                 switchMPreference
             }
-            TextMPreference::class.java.simpleName->{
+            TextMPreference::class.java.simpleName -> {
                 val textMPreference = TextMPreference()
                 for (i in 0 until pullParser.attributeCount) {
-                    textMPreference.parseAttribute(pullParser.getAttributeName(i), pullParser.getAttributeValue(i))
+                    textMPreference.parseAttribute(
+                        context,
+                        pullParser.getAttributeName(i),
+                        pullParser.getAttributeValue(i)
+                    )
                 }
                 textMPreference
             }
@@ -93,7 +107,9 @@ class MPreference : RecyclerView {
 
     fun setList(list: List<BaseMPreference>) {
         originList.clear()
+        showList.clear()
         originList.addAll(list)
+        showList.addAll(list)
         adapter.notifyDataSetChanged()
     }
 }
