@@ -19,20 +19,14 @@ abstract class BaseMPreference : MPreferenceClickable<BaseMPreference>, MPrefere
     lateinit var id: String
     var isEnable: Boolean = true
 
-    open fun parseAttribute(
-        context: Context,
-        attributeName: String,
-        attributeValue: String,
-        config: MPreferenceConfig
-    ) {
+    open fun parseAttribute(context: Context, attributeName: String, attributeValue: String, config: MPreferenceConfig) {
         when (attributeName) {
             NodeAttributeConstant.ID -> id = attributeValue
             NodeAttributeConstant.TITLE -> title = attributeValue
             NodeAttributeConstant.SUMMARY -> summary = attributeValue
             NodeAttributeConstant.IS_ENABLE -> isEnable = attributeValue == "true"
             NodeAttributeConstant.ICON -> {
-                if (!config.showIcon)
-                    return
+                if (!config.showIcon) return
                 try {
                     val temp = attributeValue.substring(1).split('/')
                     val folder = temp[0]

@@ -14,29 +14,19 @@ import vip.mystery0.mpreference.impl.CheckBoxMPreference
 import vip.mystery0.mpreference.impl.SwitchMPreference
 import vip.mystery0.mpreference.impl.TextMPreference
 
-class MPreferenceAdapter(
-    private val context: Context,
-    private val list: List<BaseMPreference>,
-    private val config: MPreferenceConfig
-) : RecyclerView.Adapter<BaseMPreferenceViewHolder<out BaseMPreference>>() {
+class MPreferenceAdapter(private val context: Context, private val list: List<BaseMPreference>, private val config: MPreferenceConfig) : RecyclerView.Adapter<BaseMPreferenceViewHolder<out BaseMPreference>>() {
     private val layoutInflater = LayoutInflater.from(context)
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): BaseMPreferenceViewHolder<out BaseMPreference> =
-        when (viewType) {
-            TYPE_TEXT -> TextMPreferenceViewHolder(layoutInflater)
-            TYPE_SWITCH -> SwitchMPreferenceViewHolder(layoutInflater)
-            TYPE_CHECK_BOX -> CheckBoxMPreferenceViewHolder(layoutInflater)
-            else -> throw NullPointerException("null")
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseMPreferenceViewHolder<out BaseMPreference> = when (viewType) {
+        TYPE_TEXT -> TextMPreferenceViewHolder(layoutInflater)
+        TYPE_SWITCH -> SwitchMPreferenceViewHolder(layoutInflater)
+        TYPE_CHECK_BOX -> CheckBoxMPreferenceViewHolder(layoutInflater)
+        else -> throw NullPointerException("null")
+    }
 
     override fun getItemCount(): Int = list.size
 
-    override fun onBindViewHolder(
-        holder: BaseMPreferenceViewHolder<out BaseMPreference>, position: Int
-    ) {
+    override fun onBindViewHolder(holder: BaseMPreferenceViewHolder<out BaseMPreference>, position: Int) {
         when (holder) {
             is TextMPreferenceViewHolder -> {
                 val preference = list[position] as TextMPreference
@@ -48,7 +38,7 @@ class MPreferenceAdapter(
                 holder.layout(context, config, preference)
                 holder.onInterface(preference)
             }
-            is CheckBoxMPreferenceViewHolder->{
+            is CheckBoxMPreferenceViewHolder -> {
                 val preference = list[position] as CheckBoxMPreference
                 holder.layout(context, config, preference)
                 holder.onInterface(preference)
@@ -56,13 +46,12 @@ class MPreferenceAdapter(
         }
     }
 
-    override fun getItemViewType(position: Int): Int =
-        when (list[position]) {
-            is TextMPreference -> TYPE_TEXT
-            is SwitchMPreference -> TYPE_SWITCH
-            is CheckBoxMPreference -> TYPE_CHECK_BOX
-            else -> UNKNOWN
-        }
+    override fun getItemViewType(position: Int): Int = when (list[position]) {
+        is TextMPreference -> TYPE_TEXT
+        is SwitchMPreference -> TYPE_SWITCH
+        is CheckBoxMPreference -> TYPE_CHECK_BOX
+        else -> UNKNOWN
+    }
 
     companion object {
         private const val UNKNOWN = -1

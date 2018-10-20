@@ -8,12 +8,7 @@ import vip.mystery0.mpreference.constant.NodeAttributeConstant
 class TextMPreference : BaseMPreference() {
     lateinit var category: String
 
-    override fun parseAttribute(
-        context: Context,
-        attributeName: String,
-        attributeValue: String,
-        config: MPreferenceConfig
-    ) {
+    override fun parseAttribute(context: Context, attributeName: String, attributeValue: String, config: MPreferenceConfig) {
         when (attributeName) {
             NodeAttributeConstant.CATEGORY -> category = attributeValue
             else -> super.parseAttribute(context, attributeName, attributeValue, config)

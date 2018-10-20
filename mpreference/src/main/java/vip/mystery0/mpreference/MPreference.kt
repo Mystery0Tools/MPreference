@@ -30,8 +30,7 @@ class MPreference : RecyclerView {
     }
 
     private fun init() {
-        if (config.showDivider)
-            addItemDecoration(DividerItemDecoration(context, LinearLayout.VERTICAL))
+        if (config.showDivider) addItemDecoration(DividerItemDecoration(context, LinearLayout.VERTICAL))
         layoutManager = LinearLayoutManager(context)
         setAdapter(adapter)
     }
@@ -52,8 +51,7 @@ class MPreference : RecyclerView {
                 XmlPullParser.START_TAG -> {
                     if (list == null) {
                         val tagName = pullParser.name
-                        if (tagName != PageMPreference::class.java.simpleName)
-                            throw RuntimeException("root key must be PageMPreference")
+                        if (tagName != PageMPreference::class.java.simpleName) throw RuntimeException("root key must be PageMPreference")
                         list = ArrayList()
                     } else {
                         list.add(getNode(pullParser))
@@ -66,58 +64,37 @@ class MPreference : RecyclerView {
         setList(list!!)
     }
 
-    private fun getNode(pullParser: XmlPullParser): BaseMPreference =
-        when (pullParser.name) {
-            PageMPreference::class.java.simpleName -> {
-                val pageMPreference = PageMPreference()
-                for (i in 0 until pullParser.attributeCount) {
-                    pageMPreference.parseAttribute(
-                        context,
-                        pullParser.getAttributeName(i),
-                        pullParser.getAttributeValue(i),
-                        config
-                    )
-                }
-                pageMPreference
+    private fun getNode(pullParser: XmlPullParser): BaseMPreference = when (pullParser.name) {
+        PageMPreference::class.java.simpleName -> {
+            val pageMPreference = PageMPreference()
+            for (i in 0 until pullParser.attributeCount) {
+                pageMPreference.parseAttribute(context, pullParser.getAttributeName(i), pullParser.getAttributeValue(i), config)
             }
-            SwitchMPreference::class.java.simpleName -> {
-                val switchMPreference = SwitchMPreference()
-                for (i in 0 until pullParser.attributeCount) {
-                    switchMPreference.parseAttribute(
-                        context,
-                        pullParser.getAttributeName(i),
-                        pullParser.getAttributeValue(i),
-                        config
-                    )
-                }
-                switchMPreference
-            }
-            TextMPreference::class.java.simpleName -> {
-                val textMPreference = TextMPreference()
-                for (i in 0 until pullParser.attributeCount) {
-                    textMPreference.parseAttribute(
-                        context,
-                        pullParser.getAttributeName(i),
-                        pullParser.getAttributeValue(i),
-                        config
-                    )
-                }
-                textMPreference
-            }
-            CheckBoxMPreference::class.java.simpleName->{
-                val checkBoxMPreference = CheckBoxMPreference()
-                for (i in 0 until pullParser.attributeCount) {
-                    checkBoxMPreference.parseAttribute(
-                        context,
-                        pullParser.getAttributeName(i),
-                        pullParser.getAttributeValue(i),
-                        config
-                    )
-                }
-                checkBoxMPreference
-            }
-            else -> throw ClassNotFoundException("cannot resolve node which named ${pullParser.name}")
+            pageMPreference
         }
+        SwitchMPreference::class.java.simpleName -> {
+            val switchMPreference = SwitchMPreference()
+            for (i in 0 until pullParser.attributeCount) {
+                switchMPreference.parseAttribute(context, pullParser.getAttributeName(i), pullParser.getAttributeValue(i), config)
+            }
+            switchMPreference
+        }
+        TextMPreference::class.java.simpleName -> {
+            val textMPreference = TextMPreference()
+            for (i in 0 until pullParser.attributeCount) {
+                textMPreference.parseAttribute(context, pullParser.getAttributeName(i), pullParser.getAttributeValue(i), config)
+            }
+            textMPreference
+        }
+        CheckBoxMPreference::class.java.simpleName -> {
+            val checkBoxMPreference = CheckBoxMPreference()
+            for (i in 0 until pullParser.attributeCount) {
+                checkBoxMPreference.parseAttribute(context, pullParser.getAttributeName(i), pullParser.getAttributeValue(i), config)
+            }
+            checkBoxMPreference
+        }
+        else -> throw ClassNotFoundException("cannot resolve node which named ${pullParser.name}")
+    }
 
     fun setList(array: Array<BaseMPreference>) = setList(array.asList())
 
@@ -130,8 +107,7 @@ class MPreference : RecyclerView {
     }
 
     fun find(position: Int): BaseMPreference {
-        if (position !in 0 until showList.size)
-            throw IndexOutOfBoundsException("cannot find item which index is $position, size is ${showList.size}")
+        if (position !in 0 until showList.size) throw IndexOutOfBoundsException("cannot find item which index is $position, size is ${showList.size}")
         return showList[position]
     }
 

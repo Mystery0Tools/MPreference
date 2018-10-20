@@ -9,8 +9,7 @@ object DensityTools {
      * @param dpValue dp值
      * @return 转换之后的px值
      */
-    fun dp2px(context: Context, dpValue: Float): Int =
-        (dpValue * context.resources.displayMetrics.density + 0.5).toInt()
+    fun dp2px(context: Context, dpValue: Float): Int = (dpValue * context.resources.displayMetrics.density + 0.5).toInt()
 
     /**
      * dp转px
@@ -26,8 +25,7 @@ object DensityTools {
      * @param pxValue px值
      * @return 转换之后的dp值
      */
-    fun px2dp(context: Context, pxValue: Float): Int =
-        (pxValue / context.resources.displayMetrics.density + 0.5).toInt()
+    fun px2dp(context: Context, pxValue: Float): Int = (pxValue / context.resources.displayMetrics.density + 0.5).toInt()
 
     /**
      * px转dp
