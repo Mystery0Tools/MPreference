@@ -11,6 +11,7 @@ import org.xmlpull.v1.XmlPullParser
 import vip.mystery0.mpreference.adapter.MPreferenceAdapter
 import vip.mystery0.mpreference.base.BaseMPreference
 import vip.mystery0.mpreference.config.MPreferenceConfig
+import vip.mystery0.mpreference.impl.CheckBoxMPreference
 import vip.mystery0.mpreference.impl.PageMPreference
 import vip.mystery0.mpreference.impl.SwitchMPreference
 import vip.mystery0.mpreference.impl.TextMPreference
@@ -103,6 +104,18 @@ class MPreference : RecyclerView {
                 }
                 textMPreference
             }
+            CheckBoxMPreference::class.java.simpleName->{
+                val checkBoxMPreference = CheckBoxMPreference()
+                for (i in 0 until pullParser.attributeCount) {
+                    checkBoxMPreference.parseAttribute(
+                        context,
+                        pullParser.getAttributeName(i),
+                        pullParser.getAttributeValue(i),
+                        config
+                    )
+                }
+                checkBoxMPreference
+            }
             else -> throw ClassNotFoundException("cannot resolve node which named ${pullParser.name}")
         }
 
@@ -114,5 +127,33 @@ class MPreference : RecyclerView {
         originList.addAll(list)
         showList.addAll(list)
         adapter.notifyDataSetChanged()
+    }
+
+    fun find(position: Int): BaseMPreference {
+        if (position !in 0 until showList.size)
+            throw IndexOutOfBoundsException("cannot find item which index is $position, size is ${showList.size}")
+        return showList[position]
+    }
+
+    fun indexOf(baseMPreference: BaseMPreference): Int = showList.indexOf(baseMPreference)
+
+    fun setOnItemClickListener(position: Int, listener: (BaseMPreference) -> Unit) {
+        find(position).setOnMPreferenceClickListener(listener)
+    }
+
+    fun setOnItemValueChangeListener(position: Int, listener: (BaseMPreference) -> Unit) {
+        find(position).setOnMPreferenceChangeListener(listener)
+    }
+
+    fun setOnClickListener(listener: (Int, BaseMPreference) -> Unit) {
+        showList.forEachIndexed { index, base ->
+            base.setOnMPreferenceClickListener { listener.invoke(index, it) }
+        }
+    }
+
+    fun setOnValueChangeListener(listener: (Int, BaseMPreference) -> Unit) {
+        showList.forEachIndexed { index, base ->
+            base.setOnMPreferenceChangeListener { listener.invoke(index, base) }
+        }
     }
 }

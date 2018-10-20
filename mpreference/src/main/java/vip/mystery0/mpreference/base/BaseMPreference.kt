@@ -5,12 +5,19 @@ import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import vip.mystery0.mpreference.config.MPreferenceConfig
 import vip.mystery0.mpreference.constant.NodeAttributeConstant
+import vip.mystery0.mpreference.mPreferenceInterface.MPreferenceClickable
+import vip.mystery0.mpreference.mPreferenceInterface.MPreferenceValueChangeable
+import vip.mystery0.mpreference.mPreferenceInterface.OnMPreferenceClickListener
+import vip.mystery0.mpreference.mPreferenceInterface.OnMPreferenceValueChangeListener
 
-abstract class BaseMPreference {
+abstract class BaseMPreference : MPreferenceClickable<BaseMPreference>, MPreferenceValueChangeable<BaseMPreference> {
+    var clickListenerMPreference: OnMPreferenceClickListener<BaseMPreference>? = null
+    var changeListenerMPreference: OnMPreferenceValueChangeListener<BaseMPreference>? = null
     lateinit var icon: Drawable
     lateinit var title: String
     lateinit var summary: String
     lateinit var id: String
+    var isEnable: Boolean = true
 
     open fun parseAttribute(
         context: Context,
@@ -22,6 +29,7 @@ abstract class BaseMPreference {
             NodeAttributeConstant.ID -> id = attributeValue
             NodeAttributeConstant.TITLE -> title = attributeValue
             NodeAttributeConstant.SUMMARY -> summary = attributeValue
+            NodeAttributeConstant.IS_ENABLE -> isEnable = attributeValue == "true"
             NodeAttributeConstant.ICON -> {
                 if (!config.showIcon)
                     return
@@ -36,6 +44,30 @@ abstract class BaseMPreference {
                 } catch (e: Exception) {
                     throw NullPointerException("cannot find resource called $attributeValue")
                 }
+            }
+        }
+    }
+
+    override fun setOnMPreferenceClickListener(listenerMPreference: OnMPreferenceClickListener<BaseMPreference>) {
+        this.clickListenerMPreference = listenerMPreference
+    }
+
+    override fun setOnMPreferenceChangeListener(listenerMPreference: OnMPreferenceValueChangeListener<BaseMPreference>) {
+        this.changeListenerMPreference = listenerMPreference
+    }
+
+    open fun setOnMPreferenceClickListener(listenerMPreference: (BaseMPreference) -> Unit) {
+        this.clickListenerMPreference = object : OnMPreferenceClickListener<BaseMPreference> {
+            override fun onClick(base: BaseMPreference) {
+                listenerMPreference.invoke(base)
+            }
+        }
+    }
+
+    open fun setOnMPreferenceChangeListener(listenerMPreference: (BaseMPreference) -> Unit) {
+        this.changeListenerMPreference = object : OnMPreferenceValueChangeListener<BaseMPreference> {
+            override fun onValueChange(base: BaseMPreference) {
+                listenerMPreference.invoke(base)
             }
         }
     }

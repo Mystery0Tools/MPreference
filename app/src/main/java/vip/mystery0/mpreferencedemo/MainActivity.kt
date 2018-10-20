@@ -1,6 +1,7 @@
 package vip.mystery0.mpreferencedemo
 
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu
@@ -18,6 +19,12 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         preference.parseAssertResource("pre.xml")
+        preference.setOnClickListener { position, preference ->
+            Log.i("TAG", "click: ${preference.title} on $position")
+        }
+        preference.setOnValueChangeListener { position, preference ->
+            Log.i("TAG", "change: ${preference.title} on $position")
+        }
 
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)

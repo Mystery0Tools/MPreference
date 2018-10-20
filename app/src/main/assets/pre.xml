@@ -1,7 +1,14 @@
 <PageMPreference>
-    <TextMPreference title="title_text"
-                     icon="@drawable/ic_launcher_background"
-                     summary="summary_text"/>
-    <SwitchMPreference title="title_switch"
-                       summary="summary_switch"/>
+    <TextMPreference
+        icon="@drawable/ic_launcher_background"
+        summary="summary_text"
+        isEnable="false"
+        title="title_text" />
+    <SwitchMPreference
+        isChecked="true"
+        summary="summary_switch"
+        title="title_switch" />
+    <CheckBoxMPreference
+        summary="summary_switch"
+        title="title_switch" />
 </PageMPreference>

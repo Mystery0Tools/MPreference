@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.widget.TextView
 import vip.mystery0.mpreference.R
-import vip.mystery0.mpreference.base.BaseMPreference
 import vip.mystery0.mpreference.base.BaseMPreferenceViewHolder
 import vip.mystery0.mpreference.config.MPreferenceConfig
 import vip.mystery0.mpreference.impl.TextMPreference
@@ -19,5 +18,9 @@ class TextMPreferenceViewHolder(layoutInflater: LayoutInflater) :
         textViewTitle.textSize = config.titleTextSize
         textViewSummary.text = base.summary
         textViewSummary.textSize = config.summaryTextSize
+    }
+
+    override fun onInterface(base: TextMPreference) {
+        view.setOnClickListener { base.clickListenerMPreference?.onClick(base) }
     }
 }
