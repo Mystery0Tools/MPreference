@@ -18,10 +18,12 @@ import vip.mystery0.mpreference.impl.TextMPreference
 import java.io.InputStream
 
 class MPreference : RecyclerView {
-    private val originList = ArrayList<BaseMPreference>()
+    private lateinit var rootMPreference: PageMPreference
     private val showList = ArrayList<BaseMPreference>()
     private val config = MPreferenceConfig()
     private val adapter = MPreferenceAdapter(context, showList, config)
+
+    private var tempPageMPreference: PageMPreference? = null
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -40,7 +42,6 @@ class MPreference : RecyclerView {
     }
 
     fun parseInputStream(stream: InputStream) {
-        var list: ArrayList<BaseMPreference>? = null
         val pullParser = Xml.newPullParser()
         pullParser.setInput(stream, "UTF-8")
         var eventType = pullParser.eventType
@@ -49,76 +50,85 @@ class MPreference : RecyclerView {
             when (eventType) {
                 XmlPullParser.START_DOCUMENT -> isEndDocument = false
                 XmlPullParser.START_TAG -> {
-                    if (list == null) {
-                        val tagName = pullParser.name
-                        if (tagName != PageMPreference::class.java.simpleName) throw RuntimeException("root key must be PageMPreference")
-                        list = ArrayList()
-                    } else {
-                        list.add(getNode(pullParser))
+                    val tagName = pullParser.name
+                    if (!::rootMPreference.isInitialized)//解析根标签
+                        parseRootTag(pullParser)
+                    else {
+                        if (tagName == PageMPreference::class.java.simpleName) {
+                            val preference = parseAttribute(PageMPreference(), pullParser)
+                            preference.root = tempPageMPreference
+                            tempPageMPreference!!.next = preference
+                            tempPageMPreference!!.content.add(preference)
+                            tempPageMPreference = preference
+                        } else {
+                            tempPageMPreference!!.content.add(getNode(pullParser))
+                        }
+                    }
+                }
+                XmlPullParser.END_TAG -> {
+                    val tagName = pullParser.name
+                    if (tagName == PageMPreference::class.java.simpleName) {
+                        tempPageMPreference = tempPageMPreference?.root
                     }
                 }
                 XmlPullParser.END_DOCUMENT -> isEndDocument = true
             }
             eventType = pullParser.next()
         }
-        setList(list!!)
+        setList(rootMPreference.content)
+    }
+
+    private fun parseRootTag(pullParser: XmlPullParser) {
+        val tagName = pullParser.name
+        if (tagName != PageMPreference::class.java.simpleName) throw RuntimeException("root key must be PageMPreference")
+        rootMPreference = PageMPreference()
+        tempPageMPreference = rootMPreference
     }
 
     private fun getNode(pullParser: XmlPullParser): BaseMPreference = when (pullParser.name) {
-        PageMPreference::class.java.simpleName -> {
-            val pageMPreference = PageMPreference()
-            for (i in 0 until pullParser.attributeCount) {
-                pageMPreference.parseAttribute(context, pullParser.getAttributeName(i), pullParser.getAttributeValue(i), config)
-            }
-            pageMPreference
-        }
-        SwitchMPreference::class.java.simpleName -> {
-            val switchMPreference = SwitchMPreference()
-            for (i in 0 until pullParser.attributeCount) {
-                switchMPreference.parseAttribute(context, pullParser.getAttributeName(i), pullParser.getAttributeValue(i), config)
-            }
-            switchMPreference
-        }
-        TextMPreference::class.java.simpleName -> {
-            val textMPreference = TextMPreference()
-            for (i in 0 until pullParser.attributeCount) {
-                textMPreference.parseAttribute(context, pullParser.getAttributeName(i), pullParser.getAttributeValue(i), config)
-            }
-            textMPreference
-        }
-        CheckBoxMPreference::class.java.simpleName -> {
-            val checkBoxMPreference = CheckBoxMPreference()
-            for (i in 0 until pullParser.attributeCount) {
-                checkBoxMPreference.parseAttribute(context, pullParser.getAttributeName(i), pullParser.getAttributeValue(i), config)
-            }
-            checkBoxMPreference
-        }
+        SwitchMPreference::class.java.simpleName -> parseAttribute(SwitchMPreference(), pullParser)
+        TextMPreference::class.java.simpleName -> parseAttribute(TextMPreference(), pullParser)
+        CheckBoxMPreference::class.java.simpleName -> parseAttribute(CheckBoxMPreference(), pullParser)
         else -> throw ClassNotFoundException("cannot resolve node which named ${pullParser.name}")
+    }
+
+    private fun <T : BaseMPreference> parseAttribute(base: T, pullParser: XmlPullParser): T {
+        for (i in 0 until pullParser.attributeCount) {
+            base.parseAttribute(context, pullParser.getAttributeName(i), pullParser.getAttributeValue(i), config)
+        }
+        return base
     }
 
     fun setList(array: Array<BaseMPreference>) = setList(array.asList())
 
     fun setList(list: List<BaseMPreference>) {
-        originList.clear()
         showList.clear()
-        originList.addAll(list)
         showList.addAll(list)
         adapter.notifyDataSetChanged()
     }
 
-    fun find(position: Int): BaseMPreference {
-        if (position !in 0 until showList.size) throw IndexOutOfBoundsException("cannot find item which index is $position, size is ${showList.size}")
-        return showList[position]
+    fun find(id: String): BaseMPreference = find(id, rootMPreference.content)
+        ?: throw NullPointerException("cannot find preference called $id")
+
+    private fun find(id: String, list: List<BaseMPreference>): BaseMPreference? {
+        list.forEach {
+            if (it.id == id) return it
+            if (it is PageMPreference) {
+                val get = find(id, it.content)
+                if (get != null) return get
+            }
+        }
+        return null
     }
 
     fun indexOf(baseMPreference: BaseMPreference): Int = showList.indexOf(baseMPreference)
 
-    fun setOnItemClickListener(position: Int, listener: (BaseMPreference) -> Unit) {
-        find(position).setOnMPreferenceClickListener(listener)
+    fun setOnItemClickListener(id: String, listener: (BaseMPreference) -> Unit) {
+        find(id).setOnMPreferenceClickListener(listener)
     }
 
-    fun setOnItemValueChangeListener(position: Int, listener: (BaseMPreference) -> Unit) {
-        find(position).setOnMPreferenceChangeListener(listener)
+    fun setOnItemValueChangeListener(id: String, listener: (BaseMPreference) -> Unit) {
+        find(id).setOnMPreferenceChangeListener(listener)
     }
 
     fun setOnClickListener(listener: (Int, BaseMPreference) -> Unit) {

@@ -14,8 +14,8 @@ abstract class BaseMPreference : MPreferenceClickable<BaseMPreference>, MPrefere
     var clickListenerMPreference: OnMPreferenceClickListener<BaseMPreference>? = null
     var changeListenerMPreference: OnMPreferenceValueChangeListener<BaseMPreference>? = null
     lateinit var icon: Drawable
-    lateinit var title: String
-    lateinit var summary: String
+    var title: String = ""
+    var summary: String = ""
     lateinit var id: String
     var isEnable: Boolean = true
 

@@ -6,9 +6,36 @@
         title="title_text" />
     <SwitchMPreference
         isChecked="true"
+        isEnable="false"
+        summary="summary_switch"
+        title="title_switch" />
+    <SwitchMPreference
+        isChecked="false"
         summary="summary_switch"
         title="title_switch" />
     <CheckBoxMPreference
+        summary="summary_switch"
+        title="title_switch" />
+    <PageMPreference
+        id="iiii">
+        <SwitchMPreference
+            isChecked="false"
+            summary="summary_switch"
+            title="title_switch" />
+        <PageMPreference
+            id="bbbb"/>
+        <SwitchMPreference
+            isChecked="true"
+            isEnable="false"
+            summary="summary_switch"
+            title="title_switch" />
+        <SwitchMPreference
+            isChecked="false"
+            summary="summary_switch"
+            title="title_switch" />
+    </PageMPreference>
+    <SwitchMPreference
+        isChecked="false"
         summary="summary_switch"
         title="title_switch" />
 </PageMPreference>
