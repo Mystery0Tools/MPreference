@@ -3,6 +3,7 @@ package vip.mystery0.mpreference
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Xml
+import android.view.KeyEvent
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +20,7 @@ import java.io.InputStream
 
 class MPreference : RecyclerView {
     private lateinit var rootMPreference: PageMPreference
+    private lateinit var nowPageMPreference: PageMPreference
     private val showList = ArrayList<BaseMPreference>()
     private val config = MPreferenceConfig()
     private val adapter = MPreferenceAdapter(context, showList, config)
@@ -28,6 +30,8 @@ class MPreference : RecyclerView {
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle) {
+        isFocusable = true
+        isFocusableInTouchMode = true
         init()
     }
 
@@ -35,6 +39,7 @@ class MPreference : RecyclerView {
         if (config.showDivider) addItemDecoration(DividerItemDecoration(context, LinearLayout.VERTICAL))
         layoutManager = LinearLayoutManager(context)
         setAdapter(adapter)
+        setEmptyMPreferenceClickListener()
     }
 
     fun parseAssertResource(fileName: String) {
@@ -75,6 +80,7 @@ class MPreference : RecyclerView {
             }
             eventType = pullParser.next()
         }
+        nowPageMPreference = rootMPreference
         setList(rootMPreference.content)
     }
 
@@ -99,12 +105,21 @@ class MPreference : RecyclerView {
         return base
     }
 
+    fun back(): Boolean {
+        if (!::nowPageMPreference.isInitialized) throw RuntimeException("nowPageMPreference is not initialized")
+        if (nowPageMPreference.root == null) return false
+        setList(nowPageMPreference.root!!.content)
+        nowPageMPreference = nowPageMPreference.root!!
+        return true
+    }
+
     fun setList(array: Array<BaseMPreference>) = setList(array.asList())
 
     fun setList(list: List<BaseMPreference>) {
         showList.clear()
         showList.addAll(list)
         adapter.notifyDataSetChanged()
+        setEmptyMPreferenceClickListener()
     }
 
     fun find(id: String): BaseMPreference = find(id, rootMPreference.content)
@@ -123,23 +138,25 @@ class MPreference : RecyclerView {
 
     fun indexOf(baseMPreference: BaseMPreference): Int = showList.indexOf(baseMPreference)
 
-    fun setOnItemClickListener(id: String, listener: (BaseMPreference) -> Unit) {
-        find(id).setOnMPreferenceClickListener(listener)
-    }
+    fun setOnItemClickListener(id: String, listener: (BaseMPreference) -> Unit) = find(id).setOnMPreferenceClickListener(listener)
 
-    fun setOnItemValueChangeListener(id: String, listener: (BaseMPreference) -> Unit) {
-        find(id).setOnMPreferenceChangeListener(listener)
-    }
+    fun setOnItemValueChangeListener(id: String, listener: (BaseMPreference) -> Unit) = find(id).setOnMPreferenceChangeListener(listener)
 
     fun setOnClickListener(listener: (Int, BaseMPreference) -> Unit) {
         showList.forEachIndexed { index, base ->
-            base.setOnMPreferenceClickListener { listener.invoke(index, it) }
+            if (base is PageMPreference) setOnPageMPreferenceClickListener(base)
+            else base.setOnMPreferenceClickListener { listener.invoke(index, it) }
         }
     }
 
-    fun setOnValueChangeListener(listener: (Int, BaseMPreference) -> Unit) {
-        showList.forEachIndexed { index, base ->
-            base.setOnMPreferenceChangeListener { listener.invoke(index, base) }
+    fun setOnValueChangeListener(listener: (Int, BaseMPreference) -> Unit) = showList.forEachIndexed { index, base -> base.setOnMPreferenceChangeListener { listener.invoke(index, base) } }
+
+    private fun setEmptyMPreferenceClickListener() = setOnClickListener { _, _ -> }
+
+    private fun setOnPageMPreferenceClickListener(baseMPreference: PageMPreference) {
+        baseMPreference.setOnMPreferenceClickListener {
+            setList(baseMPreference.content)
+            nowPageMPreference = baseMPreference
         }
     }
 }

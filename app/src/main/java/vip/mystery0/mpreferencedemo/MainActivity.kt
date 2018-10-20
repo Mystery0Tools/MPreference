@@ -18,6 +18,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        preference.isFocusable = true
+        preference.isFocusableInTouchMode = true
         preference.parseAssertResource("pre.xml")
         preference.setOnClickListener { position, preference ->
             Log.i("TAG", "click: ${preference.title} on $position")
@@ -27,8 +29,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show()
         }
     }
 
@@ -46,5 +47,9 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onBackPressed() {
+        if (!preference.back()) super.onBackPressed()
     }
 }
