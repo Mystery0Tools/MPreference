@@ -27,11 +27,6 @@ class MPreference : RecyclerView {
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle) {
-        add(CheckBoxMPreference::class.java)
-        add(PageMPreference::class.java)
-        add(SwitchMPreference::class.java)
-        add(TextMPreference::class.java)
-        add(CategoryMPreference::class.java)
         init()
     }
 
@@ -40,6 +35,7 @@ class MPreference : RecyclerView {
         layoutManager = LinearLayoutManager(context)
         setAdapter(adapter)
         setEmptyMPreferenceClickListener()
+        setBackgroundColor(config.backgroundColor)
     }
 
     fun parseAssertResource(fileName: String) {
@@ -74,6 +70,13 @@ class MPreference : RecyclerView {
                                 tempPageMPreference!!.content.add(preference)
                                 tempPageMPreference = preference
                             }
+                            PageNextMPreference::class.java.simpleName -> {
+                                val preference = parseAttribute(PageNextMPreference(), pullParser)
+                                preference.root = tempPageMPreference
+                                tempPageMPreference!!.next = preference
+                                tempPageMPreference!!.content.add(preference)
+                                tempPageMPreference = preference
+                            }
                             else -> tempPageMPreference!!.content.add(getNode(pullParser))
                         }
                     }
@@ -94,22 +97,22 @@ class MPreference : RecyclerView {
 
     private fun parseRootTag(pullParser: XmlPullParser) {
         val tagName = pullParser.name
-        if (tagName != PageMPreference::class.java.simpleName) throw RuntimeException("root key must be PageMPreference")
+        if (tagName != PageMPreference::class.java.simpleName && tagName != PageNextMPreference::class.java.simpleName) throw RuntimeException("root key must be ${PageMPreference::class.java.simpleName}!")
         rootMPreference = PageMPreference()
         tempPageMPreference = rootMPreference
     }
 
     private fun getNode(pullParser: XmlPullParser): BaseMPreference {
         val name = pullParser.name
-        config.mpreferenceList.forEach {
+        config.preferenceList.forEach {
             if (name == it.simpleName) return parseAttribute(it.newInstance(), pullParser)
         }
-        throw ClassNotFoundException("cannot resolve node which named $name")
+        throw ClassNotFoundException("cannot resolve node which named $name.")
     }
 
     private fun <T : BaseMPreference> add(clazz: Class<T>) {
-        if (clazz.isAnnotationPresent(DeclareMPreference::class.java) && !config.mpreferenceList.contains(clazz)) config.mpreferenceList.add(clazz)
-        else throw RuntimeException("the class not a annotation of DeclareMPreference")
+        if (clazz.isAnnotationPresent(DeclareMPreference::class.java) && !config.preferenceList.contains(clazz)) config.preferenceList.add(clazz)
+        else throw RuntimeException("the class not a annotation of ${DeclareMPreference::class.java.simpleName}.")
     }
 
     private fun <T : BaseMPreference> parseAttribute(base: T, pullParser: XmlPullParser): T {
@@ -120,7 +123,7 @@ class MPreference : RecyclerView {
     }
 
     fun back(): Boolean {
-        if (!::nowPageMPreference.isInitialized) throw RuntimeException("nowPageMPreference is not initialized")
+        if (!::nowPageMPreference.isInitialized) throw RuntimeException("nowPageMPreference is not initialized.")
         if (nowPageMPreference.root == null) return false
         //当root不是PageMPreference时循环
         while (nowPageMPreference.root is CategoryMPreference) nowPageMPreference = nowPageMPreference.root!!
@@ -139,7 +142,7 @@ class MPreference : RecyclerView {
     }
 
     fun find(id: String): BaseMPreference = find(id, rootMPreference.content)
-        ?: throw NullPointerException("cannot find preference called $id")
+        ?: throw NullPointerException("cannot find preference. id: $id")
 
     private fun find(id: String, list: List<BaseMPreference>): BaseMPreference? {
         list.forEach {

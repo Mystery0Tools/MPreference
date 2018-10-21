@@ -8,4 +8,5 @@ object NodeAttributeConstant {
     const val ICON = "icon"
     const val IS_ENABLE = "isEnable"
     const val IS_CHECKED = "isChecked"
+    const val NEXT_ICON="nextIcon"
 }

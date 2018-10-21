@@ -11,7 +11,6 @@ import vip.mystery0.mpreference.config.MPreferenceConfig
 import vip.mystery0.mpreference.impl.CheckBoxMPreference
 
 class CheckBoxMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPreferenceViewHolder<CheckBoxMPreference>(layoutInflater.inflate(R.layout.layout_mpreference_check_box, null)) {
-
     override fun layout(context: Context, config: MPreferenceConfig, base: CheckBoxMPreference) {
         super.layout(context, config, base)
         val textViewTitle = view.findViewById<TextView>(R.id.textViewTitle)

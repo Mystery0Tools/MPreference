@@ -1,8 +1,9 @@
-<PageMPreference>
-    <TextMPreference
+<PageNextMPreference>
+    <NextMPreference
         icon="@drawable/ic_launcher_background"
         summary="此项不可用"
         isEnable="false"
+        nextIcon="@drawable/ic_android_black_24dp"
         title="第一项的title" />
     <SwitchMPreference
         isChecked="true"
@@ -24,7 +25,7 @@
             isChecked="false"
             summary="未选中"
             title="分类里面第一项" />
-        <PageMPreference
+        <PageNextMPreference
             summary="这个页面是空的"
             title="分类里第二项"/>
         <SwitchMPreference
@@ -41,6 +42,6 @@
         isChecked="false"
         summary="未选中"
         title="第五项的title" />
-    <PageMPreference
+    <PageNextMPreference
         title="空白页面"/>
-</PageMPreference>
+</PageNextMPreference>

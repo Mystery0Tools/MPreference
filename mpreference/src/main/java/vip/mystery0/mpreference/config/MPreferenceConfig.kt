@@ -4,8 +4,10 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.TypedValue
+import androidx.annotation.ColorInt
 import vip.mystery0.mpreference.R
 import vip.mystery0.mpreference.base.BaseMPreference
+import vip.mystery0.mpreference.impl.*
 
 class MPreferenceConfig {
     var showDivider = true
@@ -16,13 +18,27 @@ class MPreferenceConfig {
     var topMargin: Int = 32//上边距——px
     var bottomMargin: Int = 32//下边距——px
     var titleTextSize: Float = 16F//sp
+    @ColorInt
     var titleTextColor: Int = Color.BLACK
     var summaryTextSize: Float = 14F//sp
+    @ColorInt
     var summaryTextColor: Int = Color.BLACK
+    @ColorInt
     var categoryTextColor: Int = Color.RED
     var divider: Drawable? = null
+    @ColorInt
+    var backgroundColor: Int = Color.WHITE
 
-    val mpreferenceList = ArrayList<Class<out BaseMPreference>>()
+    val preferenceList = ArrayList<Class<out BaseMPreference>>()
+
+    init {
+        preferenceList.add(CheckBoxMPreference::class.java)
+        preferenceList.add(PageMPreference::class.java)
+        preferenceList.add(SwitchMPreference::class.java)
+        preferenceList.add(TextMPreference::class.java)
+        preferenceList.add(CategoryMPreference::class.java)
+        preferenceList.add(NextMPreference::class.java)
+    }
 
     fun init(context: Context): MPreferenceConfig {
         initCategoryTextColor(context)

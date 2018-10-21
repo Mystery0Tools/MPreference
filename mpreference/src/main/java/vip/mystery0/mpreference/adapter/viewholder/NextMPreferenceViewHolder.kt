@@ -5,13 +5,14 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import vip.mystery0.mpreference.R
 import vip.mystery0.mpreference.base.BaseMPreferenceViewHolder
 import vip.mystery0.mpreference.config.MPreferenceConfig
-import vip.mystery0.mpreference.impl.PageNextMPreference
+import vip.mystery0.mpreference.impl.NextMPreference
 
-class PageMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPreferenceViewHolder<PageNextMPreference>(layoutInflater.inflate(R.layout.layout_mpreference_text, null)) {
-    override fun layout(context: Context, config: MPreferenceConfig, base: PageNextMPreference) {
+class NextMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPreferenceViewHolder<NextMPreference>(layoutInflater.inflate(R.layout.layout_mpreference_next, null)) {
+    override fun layout(context: Context, config: MPreferenceConfig, base: NextMPreference) {
         super.layout(context, config, base)
         val textViewTitle = view.findViewById<TextView>(R.id.textViewTitle)
         val textViewSummary = view.findViewById<TextView>(R.id.textViewSummary)
@@ -20,10 +21,10 @@ class PageMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPreferenc
         textViewTitle.textSize = config.titleTextSize
         textViewSummary.text = base.summary
         textViewSummary.textSize = config.summaryTextSize
-        imageViewNext.setImageDrawable(base.nextDrawable)
+        imageViewNext.setImageDrawable(if (base.nextDrawable == null) ContextCompat.getDrawable(context, R.drawable.ic_navigate_next) else base.nextDrawable)
     }
 
-    override fun onInterface(base: PageNextMPreference) {
+    override fun onInterface(base: NextMPreference) {
         view.setOnClickListener { base.clickListenerMPreference?.onClick(base) }
     }
 

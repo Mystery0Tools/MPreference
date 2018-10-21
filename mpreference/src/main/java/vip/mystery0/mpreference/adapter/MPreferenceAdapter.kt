@@ -35,7 +35,7 @@ class MPreferenceAdapter(private val context: Context, private val list: List<Ba
 
     override fun getItemViewType(position: Int): Int {
         val clazz = list[position].javaClass
-        config.mpreferenceList.forEach {
+        config.preferenceList.forEach {
             if (it.name == clazz.name) {
                 if (!viewTypeMap.contains(it)) {
                     viewTypeMap.add(it)
