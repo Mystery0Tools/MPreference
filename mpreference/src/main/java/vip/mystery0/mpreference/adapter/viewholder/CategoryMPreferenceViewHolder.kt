@@ -9,6 +9,7 @@ import vip.mystery0.mpreference.base.BaseMPreferenceViewHolder
 import vip.mystery0.mpreference.config.MPreferenceConfig
 import vip.mystery0.mpreference.impl.CategoryMPreference
 import vip.mystery0.mpreference.mpreferenceAnnotation.DeclareMPreference
+import vip.mystery0.mpreference.util.DensityTools
 
 class CategoryMPreferenceViewHolder(private val layoutInflater: LayoutInflater) : BaseMPreferenceViewHolder<CategoryMPreference>(layoutInflater.inflate(R.layout.layout_mpreference_category, null)) {
     override fun layout(context: Context, config: MPreferenceConfig, base: CategoryMPreference) {
@@ -16,7 +17,7 @@ class CategoryMPreferenceViewHolder(private val layoutInflater: LayoutInflater) 
         view.setPadding(0, 0, 0, 0)
         val textViewCategory = view.findViewById<TextView>(R.id.textViewCategory)
         val contentLinearLayout = view.findViewById<LinearLayout>(R.id.contentLinearLayout)
-        textViewCategory.setPadding(config.startMargin, textViewCategory.paddingTop, config.endMargin, textViewCategory.paddingBottom)
+        textViewCategory.setPadding(if (config.showIcon) 2 * config.startMargin + DensityTools.dp2px(context, config.iconSize) else config.startMargin, textViewCategory.paddingTop, config.endMargin, textViewCategory.paddingBottom)
         textViewCategory.text = base.title
         textViewCategory.setTextColor(config.categoryTextColor)
         contentLinearLayout.dividerDrawable = config.divider

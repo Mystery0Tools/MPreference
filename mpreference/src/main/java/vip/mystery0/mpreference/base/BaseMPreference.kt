@@ -13,7 +13,7 @@ import vip.mystery0.mpreference.mPreferenceInterface.OnMPreferenceValueChangeLis
 abstract class BaseMPreference : MPreferenceClickable<BaseMPreference>, MPreferenceValueChangeable<BaseMPreference> {
     var clickListenerMPreference: OnMPreferenceClickListener<BaseMPreference>? = null
     var changeListenerMPreference: OnMPreferenceValueChangeListener<BaseMPreference>? = null
-    lateinit var icon: Drawable
+    var icon: Drawable? = null
     var title: String = ""
     var summary: String = ""
     lateinit var id: String
@@ -32,9 +32,7 @@ abstract class BaseMPreference : MPreferenceClickable<BaseMPreference>, MPrefere
                     val folder = temp[0]
                     val resourceName = temp[1]
                     val id = context.resources.getIdentifier(resourceName, folder, context.packageName)
-                    val iconDrawable = ContextCompat.getDrawable(context, id)
-                        ?: throw NullPointerException("cannot find resource called $attributeValue")
-                    icon = iconDrawable
+                    icon = ContextCompat.getDrawable(context, id)
                 } catch (e: Exception) {
                     throw NullPointerException("cannot find resource called $attributeValue")
                 }

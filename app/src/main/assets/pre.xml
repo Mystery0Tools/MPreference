@@ -1,43 +1,45 @@
 <PageMPreference>
     <TextMPreference
         icon="@drawable/ic_launcher_background"
-        summary="summary_text"
+        summary="此项不可用"
         isEnable="false"
-        title="title_text" />
+        title="第一项的title" />
     <SwitchMPreference
         isChecked="true"
+        icon="@drawable/ic_android_black_24dp"
         isEnable="false"
-        summary="summary_switch"
-        title="title_switch" />
+        summary="此项不可用，选中"
+        title="第二项的title" />
     <SwitchMPreference
         isChecked="false"
-        summary="summary_switch"
-        title="title_switch" />
+        summary="未选中"
+        title="第三项的title" />
     <CheckBoxMPreference
-        summary="summary_switch"
-        title="title_switch" />
+        summary="summary"
+        title="第四项的title" />
     <CategoryMPreference
-        title="category">
+        title="这里是分类">
         <SwitchMPreference
             isChecked="false"
-            summary="summary_switch"
-            title="title_switch" />
+            summary="未选中"
+            title="分类里面第一项" />
         <PageMPreference
-            title="bbbb"/>
+            summary="这个页面是空的"
+            title="分类里第二项"/>
         <SwitchMPreference
             isChecked="true"
             isEnable="false"
-            summary="summary_switch"
-            title="title_switch" />
+            summary="summary不可用未选中"
+            title="分类里第三项" />
         <SwitchMPreference
             isChecked="false"
-            summary="summary_switch"
-            title="title_switch" />
+            summary="未选中"
+            title="分类里第四项" />
     </CategoryMPreference>
     <SwitchMPreference
         isChecked="false"
-        summary="summary_switch"
-        title="title_switch" />
+        summary="未选中"
+        title="第五项的title" />
     <PageMPreference
-        title="bbbbssss"/>
+        title="空白页面"/>
 </PageMPreference>
