@@ -16,14 +16,14 @@
     <CheckBoxMPreference
         summary="summary_switch"
         title="title_switch" />
-    <PageMPreference
-        id="iiii">
+    <CategoryMPreference
+        title="category">
         <SwitchMPreference
             isChecked="false"
             summary="summary_switch"
             title="title_switch" />
         <PageMPreference
-            id="bbbb"/>
+            title="bbbb"/>
         <SwitchMPreference
             isChecked="true"
             isEnable="false"
@@ -33,11 +33,11 @@
             isChecked="false"
             summary="summary_switch"
             title="title_switch" />
-    </PageMPreference>
+    </CategoryMPreference>
     <SwitchMPreference
         isChecked="false"
         summary="summary_switch"
         title="title_switch" />
     <PageMPreference
-        id="bbbbssss"/>
+        title="bbbbssss"/>
 </PageMPreference>

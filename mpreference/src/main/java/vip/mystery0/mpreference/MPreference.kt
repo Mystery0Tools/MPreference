@@ -11,10 +11,7 @@ import org.xmlpull.v1.XmlPullParser
 import vip.mystery0.mpreference.adapter.MPreferenceAdapter
 import vip.mystery0.mpreference.base.BaseMPreference
 import vip.mystery0.mpreference.config.MPreferenceConfig
-import vip.mystery0.mpreference.impl.CheckBoxMPreference
-import vip.mystery0.mpreference.impl.PageMPreference
-import vip.mystery0.mpreference.impl.SwitchMPreference
-import vip.mystery0.mpreference.impl.TextMPreference
+import vip.mystery0.mpreference.impl.*
 import vip.mystery0.mpreference.mpreferenceAnnotation.DeclareMPreference
 import java.io.InputStream
 
@@ -22,7 +19,7 @@ class MPreference : RecyclerView {
     private lateinit var rootMPreference: PageMPreference
     private lateinit var nowPageMPreference: PageMPreference
     private val showList = ArrayList<BaseMPreference>()
-    private val config = MPreferenceConfig()
+    private val config = MPreferenceConfig().init(context)
     private val adapter = MPreferenceAdapter(context, showList, config)
 
     private var tempPageMPreference: PageMPreference? = null
@@ -34,6 +31,7 @@ class MPreference : RecyclerView {
         add(PageMPreference::class.java)
         add(SwitchMPreference::class.java)
         add(TextMPreference::class.java)
+        add(CategoryMPreference::class.java)
         init()
     }
 
@@ -61,20 +59,28 @@ class MPreference : RecyclerView {
                     if (!::rootMPreference.isInitialized)//解析根标签
                         parseRootTag(pullParser)
                     else {
-                        if (tagName == PageMPreference::class.java.simpleName) {
-                            val preference = parseAttribute(PageMPreference(), pullParser)
-                            preference.root = tempPageMPreference
-                            tempPageMPreference!!.next = preference
-                            tempPageMPreference!!.content.add(preference)
-                            tempPageMPreference = preference
-                        } else {
-                            tempPageMPreference!!.content.add(getNode(pullParser))
+                        when (tagName) {
+                            PageMPreference::class.java.simpleName -> {
+                                val preference = parseAttribute(PageMPreference(), pullParser)
+                                preference.root = tempPageMPreference
+                                tempPageMPreference!!.next = preference
+                                tempPageMPreference!!.content.add(preference)
+                                tempPageMPreference = preference
+                            }
+                            CategoryMPreference::class.java.simpleName -> {
+                                val preference = parseAttribute(CategoryMPreference(), pullParser)
+                                preference.root = tempPageMPreference
+                                tempPageMPreference!!.next = preference
+                                tempPageMPreference!!.content.add(preference)
+                                tempPageMPreference = preference
+                            }
+                            else -> tempPageMPreference!!.content.add(getNode(pullParser))
                         }
                     }
                 }
                 XmlPullParser.END_TAG -> {
                     val tagName = pullParser.name
-                    if (tagName == PageMPreference::class.java.simpleName) {
+                    if (tagName == PageMPreference::class.java.simpleName || tagName == CategoryMPreference::class.java.simpleName) {
                         tempPageMPreference = tempPageMPreference?.root
                     }
                 }
@@ -116,6 +122,8 @@ class MPreference : RecyclerView {
     fun back(): Boolean {
         if (!::nowPageMPreference.isInitialized) throw RuntimeException("nowPageMPreference is not initialized")
         if (nowPageMPreference.root == null) return false
+        //当root不是PageMPreference时循环
+        while (nowPageMPreference.root is CategoryMPreference) nowPageMPreference = nowPageMPreference.root!!
         setList(nowPageMPreference.root!!.content)
         nowPageMPreference = nowPageMPreference.root!!
         return true
@@ -150,16 +158,25 @@ class MPreference : RecyclerView {
 
     fun setOnItemValueChangeListener(id: String, listener: (BaseMPreference) -> Unit) = find(id).setOnMPreferenceChangeListener(listener)
 
-    fun setOnClickListener(listener: (Int, BaseMPreference) -> Unit) {
-        showList.forEachIndexed { index, base ->
-            if (base is PageMPreference) setOnPageMPreferenceClickListener(base)
-            else base.setOnMPreferenceClickListener { listener.invoke(index, it) }
+    fun setOnClickListener(listener: (BaseMPreference) -> Unit) = setOnClickListener(showList, listener)
+
+    /**
+     * 递归设置点击事件
+     */
+    private fun setOnClickListener(list: List<BaseMPreference>, listener: (BaseMPreference) -> Unit) {
+        list.forEach { base ->
+            when (base) {
+                //Category必须在Page前面，因为二者有继承关系
+                is CategoryMPreference -> setOnClickListener(base.content, listener)
+                is PageMPreference -> setOnPageMPreferenceClickListener(base)
+                else -> base.setOnMPreferenceClickListener { listener.invoke(it) }
+            }
         }
     }
 
-    fun setOnValueChangeListener(listener: (Int, BaseMPreference) -> Unit) = showList.forEachIndexed { index, base -> base.setOnMPreferenceChangeListener { listener.invoke(index, base) } }
+    fun setOnValueChangeListener(listener: (BaseMPreference) -> Unit) = showList.forEach { base -> base.setOnMPreferenceChangeListener { listener.invoke(base) } }
 
-    private fun setEmptyMPreferenceClickListener() = setOnClickListener { _, _ -> }
+    private fun setEmptyMPreferenceClickListener() = setOnClickListener { }
 
     private fun setOnPageMPreferenceClickListener(baseMPreference: PageMPreference) {
         baseMPreference.setOnMPreferenceClickListener {

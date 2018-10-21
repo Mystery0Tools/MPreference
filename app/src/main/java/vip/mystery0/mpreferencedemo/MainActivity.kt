@@ -21,11 +21,11 @@ class MainActivity : AppCompatActivity() {
         preference.isFocusable = true
         preference.isFocusableInTouchMode = true
         preference.parseAssertResource("pre.xml")
-        preference.setOnClickListener { position, preference ->
-            Log.i("TAG", "click: ${preference.title} on $position")
+        preference.setOnClickListener { preference ->
+            Log.i("TAG", "click: ${preference.title}")
         }
-        preference.setOnValueChangeListener { position, preference ->
-            Log.i("TAG", "change: ${preference.title} on $position")
+        preference.setOnValueChangeListener {  preference ->
+            Log.i("TAG", "change: ${preference.title}")
         }
 
         fab.setOnClickListener { view ->
