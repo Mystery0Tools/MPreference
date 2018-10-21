@@ -101,13 +101,6 @@ class MPreference : RecyclerView {
         throw ClassNotFoundException("cannot resolve node which named $name")
     }
 
-//    private fun getNode(pullParser: XmlPullParser): BaseMPreference = when (pullParser.name) {
-//        SwitchMPreference::class.java.simpleName -> parseAttribute(SwitchMPreference(), pullParser)
-//        TextMPreference::class.java.simpleName -> parseAttribute(TextMPreference(), pullParser)
-//        CheckBoxMPreference::class.java.simpleName -> parseAttribute(CheckBoxMPreference(), pullParser)
-//        else -> throw ClassNotFoundException("cannot resolve node which named ${pullParser.name}")
-//    }
-
     private fun <T : BaseMPreference> add(clazz: Class<T>) {
         if (clazz.isAnnotationPresent(DeclareMPreference::class.java) && !config.mpreferenceList.contains(clazz)) config.mpreferenceList.add(clazz)
         else throw RuntimeException("the class not a annotation of DeclareMPreference")

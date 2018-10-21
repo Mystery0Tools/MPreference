@@ -33,11 +33,6 @@ class MPreferenceAdapter(private val context: Context, private val list: List<Ba
         }
     }
 
-    private fun <T : BaseMPreference, H : BaseMPreferenceViewHolder<T>> set(base: T, holder: H) {
-        holder.layout(context, config, base)
-        holder.onInterface(base)
-    }
-
     override fun getItemViewType(position: Int): Int {
         val clazz = list[position].javaClass
         config.mpreferenceList.forEach {
