@@ -11,6 +11,7 @@ class CategoryMPreference : PageMPreference() {
     override fun parseAttribute(context: Context, attributeName: String, attributeValue: String, config: MPreferenceConfig) {
         when (attributeName) {
             NodeAttributeConstant.IS_ENABLE -> isEnable = true//设置category不可禁用
+            NodeAttributeConstant.ICON -> icon = null//设置icon无效
             else -> super.parseAttribute(context, attributeName, attributeValue, config)
         }
     }

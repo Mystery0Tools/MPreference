@@ -18,6 +18,7 @@
         summary="summary"
         title="第四项的title" />
     <CategoryMPreference
+        icon="@drawable/ic_android_black_24dp"
         title="这里是分类">
         <SwitchMPreference
             isChecked="false"
