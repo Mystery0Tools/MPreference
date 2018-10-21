@@ -1,6 +1,7 @@
 package vip.mystery0.mpreference.config
 
 import android.graphics.Color
+import vip.mystery0.mpreference.base.BaseMPreference
 
 class MPreferenceConfig {
     var showDivider = true
@@ -13,4 +14,6 @@ class MPreferenceConfig {
     var titleTextColor: Int = Color.BLACK
     var summaryTextSize: Float = 14F
     var summaryTextColor: Int = Color.BLACK
+
+    val mpreferenceList = ArrayList<Class<out BaseMPreference>>()
 }

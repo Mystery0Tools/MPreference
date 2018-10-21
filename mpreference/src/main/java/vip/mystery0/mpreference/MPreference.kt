@@ -3,7 +3,6 @@ package vip.mystery0.mpreference
 import android.content.Context
 import android.util.AttributeSet
 import android.util.Xml
-import android.view.KeyEvent
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +15,7 @@ import vip.mystery0.mpreference.impl.CheckBoxMPreference
 import vip.mystery0.mpreference.impl.PageMPreference
 import vip.mystery0.mpreference.impl.SwitchMPreference
 import vip.mystery0.mpreference.impl.TextMPreference
+import vip.mystery0.mpreference.mpreferenceAnnotation.DeclareMPreference
 import java.io.InputStream
 
 class MPreference : RecyclerView {
@@ -30,8 +30,10 @@ class MPreference : RecyclerView {
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle) {
-        isFocusable = true
-        isFocusableInTouchMode = true
+        add(CheckBoxMPreference::class.java)
+        add(PageMPreference::class.java)
+        add(SwitchMPreference::class.java)
+        add(TextMPreference::class.java)
         init()
     }
 
@@ -91,11 +93,24 @@ class MPreference : RecyclerView {
         tempPageMPreference = rootMPreference
     }
 
-    private fun getNode(pullParser: XmlPullParser): BaseMPreference = when (pullParser.name) {
-        SwitchMPreference::class.java.simpleName -> parseAttribute(SwitchMPreference(), pullParser)
-        TextMPreference::class.java.simpleName -> parseAttribute(TextMPreference(), pullParser)
-        CheckBoxMPreference::class.java.simpleName -> parseAttribute(CheckBoxMPreference(), pullParser)
-        else -> throw ClassNotFoundException("cannot resolve node which named ${pullParser.name}")
+    private fun getNode(pullParser: XmlPullParser): BaseMPreference {
+        val name = pullParser.name
+        config.mpreferenceList.forEach {
+            if (name == it.simpleName) return parseAttribute(it.newInstance(), pullParser)
+        }
+        throw ClassNotFoundException("cannot resolve node which named $name")
+    }
+
+//    private fun getNode(pullParser: XmlPullParser): BaseMPreference = when (pullParser.name) {
+//        SwitchMPreference::class.java.simpleName -> parseAttribute(SwitchMPreference(), pullParser)
+//        TextMPreference::class.java.simpleName -> parseAttribute(TextMPreference(), pullParser)
+//        CheckBoxMPreference::class.java.simpleName -> parseAttribute(CheckBoxMPreference(), pullParser)
+//        else -> throw ClassNotFoundException("cannot resolve node which named ${pullParser.name}")
+//    }
+
+    private fun <T : BaseMPreference> add(clazz: Class<T>) {
+        if (clazz.isAnnotationPresent(DeclareMPreference::class.java) && !config.mpreferenceList.contains(clazz)) config.mpreferenceList.add(clazz)
+        else throw RuntimeException("the class not a annotation of DeclareMPreference")
     }
 
     private fun <T : BaseMPreference> parseAttribute(base: T, pullParser: XmlPullParser): T {
