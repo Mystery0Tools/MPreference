@@ -12,8 +12,7 @@ import vip.mystery0.mpreference.config.MPreferenceConfig
 import vip.mystery0.mpreference.impl.PageNextMPreference
 
 class PageNextMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPreferenceViewHolder<PageNextMPreference>(layoutInflater.inflate(R.layout.layout_mpreference_next, null)) {
-    override fun layout(context: Context, config: MPreferenceConfig, base: PageNextMPreference) {
-        super.layout(context, config, base)
+    override fun onLayout(context: Context, config: MPreferenceConfig, base: PageNextMPreference) {
         val textViewTitle = view.findViewById<TextView>(R.id.textViewTitle)
         val textViewSummary = view.findViewById<TextView>(R.id.textViewSummary)
         val imageViewNext = view.findViewById<ImageView>(R.id.imageViewNext)
@@ -24,12 +23,10 @@ class PageNextMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPrefe
         imageViewNext.setImageDrawable(if (base.nextDrawable == null) ContextCompat.getDrawable(context, R.drawable.ic_navigate_next) else base.nextDrawable)
     }
 
-    override fun onInterface(base: PageNextMPreference) {
-        view.setOnClickListener { base.clickListenerMPreference?.onClick(base) }
+    override fun onSetListener(base: PageNextMPreference) {
     }
 
     override fun onEnable(config: MPreferenceConfig) {
-        super.onEnable(config)
         val textViewTitle = view.findViewById<TextView>(R.id.textViewTitle)
         val textViewSummary = view.findViewById<TextView>(R.id.textViewSummary)
         textViewTitle.setTextColor(config.titleTextColor)
@@ -37,7 +34,6 @@ class PageNextMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPrefe
     }
 
     override fun onDisable(config: MPreferenceConfig) {
-        super.onDisable(config)
         val textViewTitle = view.findViewById<TextView>(R.id.textViewTitle)
         val textViewSummary = view.findViewById<TextView>(R.id.textViewSummary)
         textViewTitle.setTextColor(Color.GRAY)

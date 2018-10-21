@@ -1,9 +1,13 @@
 package vip.mystery0.mpreference
 
 import android.content.Context
+import android.os.Handler
+import android.os.HandlerThread
+import android.os.Message
 import android.util.AttributeSet
 import android.util.Xml
 import android.widget.LinearLayout
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +28,8 @@ class MPreference : RecyclerView {
 
     private var tempPageMPreference: PageMPreference? = null
 
+    private lateinit var handlerThread: HandlerThread
+
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle) {
@@ -38,11 +44,36 @@ class MPreference : RecyclerView {
         setBackgroundColor(config.backgroundColor)
     }
 
-    fun parseAssertResource(fileName: String) {
-        parseInputStream(context.assets.open(fileName))
+    fun parseAssertResource(fileName: String, addOneByOne: Boolean = true, parseInThread: Boolean = true) {
+        parseInputStream(context.assets.open(fileName), addOneByOne, parseInThread)
     }
 
-    fun parseInputStream(stream: InputStream) {
+    fun parseInputStream(stream: InputStream, addOneByOne: Boolean = true, parseInThread: Boolean = true) {
+        if (addOneByOne) itemAnimator = DefaultItemAnimator()
+        if (parseInThread) parseInThread(stream)
+        else {
+            if (::handlerThread.isInitialized) handlerThread.quit()
+            parse(stream)
+            setList(rootMPreference.content, addOneByOne)
+        }
+    }
+
+    private fun parseInThread(stream: InputStream, addOneByOne: Boolean = true) {
+        if (!::handlerThread.isInitialized) handlerThread = HandlerThread("MPreferenceHandlerThread")
+        handlerThread.start()
+        val handler = object : Handler(handlerThread.looper) {
+            override fun handleMessage(msg: Message?) {
+                setList(rootMPreference.content, addOneByOne)
+                handlerThread.quit()
+            }
+        }
+        Thread {
+            parse(stream)
+            handler.sendEmptyMessage(0)
+        }.start()
+    }
+
+    private fun parse(stream: InputStream) {
         val pullParser = Xml.newPullParser()
         pullParser.setInput(stream, "UTF-8")
         var eventType = pullParser.eventType
@@ -92,7 +123,6 @@ class MPreference : RecyclerView {
             eventType = pullParser.next()
         }
         nowPageMPreference = rootMPreference
-        setList(rootMPreference.content)
     }
 
     private fun parseRootTag(pullParser: XmlPullParser) {
@@ -132,12 +162,20 @@ class MPreference : RecyclerView {
         return true
     }
 
-    fun setList(array: Array<BaseMPreference>) = setList(array.asList())
+    fun setList(array: Array<BaseMPreference>, addOneByOne: Boolean = true) = setList(array.asList(), addOneByOne)
 
-    fun setList(list: List<BaseMPreference>) {
+    fun setList(list: List<BaseMPreference>, addOneByOne: Boolean = true) {
         showList.clear()
-        showList.addAll(list)
         adapter.notifyDataSetChanged()
+        if (addOneByOne) {
+            list.forEach {
+                showList.add(it)
+                adapter.notifyItemInserted(showList.size - 1)
+            }
+        } else {
+            showList.addAll(list)
+            adapter.notifyDataSetChanged()
+        }
         setEmptyMPreferenceClickListener()
     }
 

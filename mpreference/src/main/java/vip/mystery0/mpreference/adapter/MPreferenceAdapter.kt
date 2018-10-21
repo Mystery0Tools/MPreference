@@ -23,13 +23,12 @@ class MPreferenceAdapter(private val context: Context, private val list: List<Ba
 
     override fun onBindViewHolder(holder: BaseMPreferenceViewHolder<out BaseMPreference>, position: Int) {
         val preference = list[position]
-        val clazz = preference.javaClass
-        val holderClass = clazz.getAnnotation(DeclareMPreference::class.java)!!.bindMPreferenceViewHolder.java
+        val holderClass = preference.javaClass.getAnnotation(DeclareMPreference::class.java)!!.bindMPreferenceViewHolder.java
         if (holder.javaClass == holderClass) {
-            val layoutFunction = holderClass.getDeclaredMethod("layout", Context::class.java, MPreferenceConfig::class.java, clazz)
-            val onInterfaceFunction = holderClass.getDeclaredMethod("onInterface", clazz)
+            val layoutFunction = holderClass.getMethod("layout", Context::class.java, MPreferenceConfig::class.java, BaseMPreference::class.java)
+            val onSetListenerFunction = holderClass.getMethod("setListener", BaseMPreference::class.java)
             layoutFunction.invoke(holder, context, config, preference)
-            onInterfaceFunction.invoke(holder, preference)
+            onSetListenerFunction.invoke(holder, preference)
         }
     }
 

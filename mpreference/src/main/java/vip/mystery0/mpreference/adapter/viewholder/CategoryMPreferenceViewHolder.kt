@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.TextView
 import vip.mystery0.mpreference.R
+import vip.mystery0.mpreference.base.BaseMPreference
 import vip.mystery0.mpreference.base.BaseMPreferenceViewHolder
 import vip.mystery0.mpreference.config.MPreferenceConfig
 import vip.mystery0.mpreference.impl.CategoryMPreference
@@ -12,8 +13,7 @@ import vip.mystery0.mpreference.mpreferenceAnnotation.DeclareMPreference
 import vip.mystery0.mpreference.util.DensityTools
 
 class CategoryMPreferenceViewHolder(private val layoutInflater: LayoutInflater) : BaseMPreferenceViewHolder<CategoryMPreference>(layoutInflater.inflate(R.layout.layout_mpreference_category, null)) {
-    override fun layout(context: Context, config: MPreferenceConfig, base: CategoryMPreference) {
-        super.layout(context, config, base)
+    override fun onLayout(context: Context, config: MPreferenceConfig, base: CategoryMPreference) {
         view.setPadding(0, 0, 0, 0)
         val textViewCategory = view.findViewById<TextView>(R.id.textViewCategory)
         val contentLinearLayout = view.findViewById<LinearLayout>(R.id.contentLinearLayout)
@@ -23,17 +23,22 @@ class CategoryMPreferenceViewHolder(private val layoutInflater: LayoutInflater) 
         contentLinearLayout.dividerDrawable = config.divider
         contentLinearLayout.removeAllViews()
         base.content.forEach {
-            val clazz = it.javaClass
-            val holderClass = clazz.getAnnotation(DeclareMPreference::class.java)!!.bindMPreferenceViewHolder.java
+            val holderClass = it.javaClass.getAnnotation(DeclareMPreference::class.java)!!.bindMPreferenceViewHolder.java
             val holderInstance = holderClass.getDeclaredConstructor(LayoutInflater::class.java).newInstance(layoutInflater)
-            val layoutFunction = holderClass.getDeclaredMethod("layout", Context::class.java, MPreferenceConfig::class.java, clazz)
-            val onInterfaceFunction = holderClass.getDeclaredMethod("onInterface", clazz)
+            val layoutFunction = holderClass.getMethod("layout", Context::class.java, MPreferenceConfig::class.java, BaseMPreference::class.java)
+            val onInterfaceFunction = holderClass.getMethod("setListener", BaseMPreference::class.java)
             layoutFunction.invoke(holderInstance, context, config, it)
             onInterfaceFunction.invoke(holderInstance, it)
             contentLinearLayout.addView(holderInstance.view)
         }
     }
 
-    override fun onInterface(base: CategoryMPreference) {
+    override fun onSetListener(base: CategoryMPreference) {
+    }
+
+    override fun onEnable(config: MPreferenceConfig) {
+    }
+
+    override fun onDisable(config: MPreferenceConfig) {
     }
 }

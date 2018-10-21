@@ -10,8 +10,7 @@ import vip.mystery0.mpreference.config.MPreferenceConfig
 import vip.mystery0.mpreference.impl.TextMPreference
 
 class TextMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPreferenceViewHolder<TextMPreference>(layoutInflater.inflate(R.layout.layout_mpreference_text, null)) {
-    override fun layout(context: Context, config: MPreferenceConfig, base: TextMPreference) {
-        super.layout(context, config, base)
+    override fun onLayout(context: Context, config: MPreferenceConfig, base: TextMPreference) {
         val textViewTitle = view.findViewById<TextView>(R.id.textViewTitle)
         val textViewSummary = view.findViewById<TextView>(R.id.textViewSummary)
         textViewTitle.text = base.title
@@ -20,12 +19,10 @@ class TextMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPreferenc
         textViewSummary.textSize = config.summaryTextSize
     }
 
-    override fun onInterface(base: TextMPreference) {
-        view.setOnClickListener { base.clickListenerMPreference?.onClick(base) }
+    override fun onSetListener(base: TextMPreference) {
     }
 
     override fun onEnable(config: MPreferenceConfig) {
-        super.onEnable(config)
         val textViewTitle = view.findViewById<TextView>(R.id.textViewTitle)
         val textViewSummary = view.findViewById<TextView>(R.id.textViewSummary)
         textViewTitle.setTextColor(config.titleTextColor)
@@ -33,7 +30,6 @@ class TextMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPreferenc
     }
 
     override fun onDisable(config: MPreferenceConfig) {
-        super.onDisable(config)
         val textViewTitle = view.findViewById<TextView>(R.id.textViewTitle)
         val textViewSummary = view.findViewById<TextView>(R.id.textViewSummary)
         textViewTitle.setTextColor(Color.GRAY)

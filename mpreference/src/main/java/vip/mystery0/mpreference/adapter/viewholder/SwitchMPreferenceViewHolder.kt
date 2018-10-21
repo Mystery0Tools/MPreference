@@ -11,8 +11,7 @@ import vip.mystery0.mpreference.config.MPreferenceConfig
 import vip.mystery0.mpreference.impl.SwitchMPreference
 
 class SwitchMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPreferenceViewHolder<SwitchMPreference>(layoutInflater.inflate(R.layout.layout_mpreference_switch, null)) {
-    override fun layout(context: Context, config: MPreferenceConfig, base: SwitchMPreference) {
-        super.layout(context, config, base)
+    override fun onLayout(context: Context, config: MPreferenceConfig, base: SwitchMPreference) {
         val textViewTitle = view.findViewById<TextView>(R.id.textViewTitle)
         val textViewSummary = view.findViewById<TextView>(R.id.textViewSummary)
         val switchButton = view.findViewById<Switch>(R.id.switchButton)
@@ -23,7 +22,7 @@ class SwitchMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPrefere
         switchButton.isChecked = base.isChecked
     }
 
-    override fun onInterface(base: SwitchMPreference) {
+    override fun onSetListener(base: SwitchMPreference) {
         val switchButton = view.findViewById<Switch>(R.id.switchButton)
         view.setOnClickListener {
             base.clickListenerMPreference?.onClick(base)
@@ -36,7 +35,6 @@ class SwitchMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPrefere
     }
 
     override fun onEnable(config: MPreferenceConfig) {
-        super.onEnable(config)
         val textViewTitle = view.findViewById<TextView>(R.id.textViewTitle)
         val textViewSummary = view.findViewById<TextView>(R.id.textViewSummary)
         val switchButton = view.findViewById<Switch>(R.id.switchButton)
@@ -46,7 +44,6 @@ class SwitchMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPrefere
     }
 
     override fun onDisable(config: MPreferenceConfig) {
-        super.onDisable(config)
         val textViewTitle = view.findViewById<TextView>(R.id.textViewTitle)
         val textViewSummary = view.findViewById<TextView>(R.id.textViewSummary)
         val switchButton = view.findViewById<Switch>(R.id.switchButton)
