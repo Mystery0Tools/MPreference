@@ -208,7 +208,7 @@ class MPreference : RecyclerView {
 
     private fun updateListener() {
         setOnClickListener(showList, clickListener)
-        showList.forEach { base -> base.setOnMPreferenceChangeListener { changeListener.invoke(base) } }
+        setOnChangeListener(showList, changeListener)
     }
 
     fun update() {
@@ -223,9 +223,20 @@ class MPreference : RecyclerView {
                 //Category必须在Page前面，因为二者有继承关系
                 is CategoryMPreference -> setOnClickListener(base.content, listener)
                 is PageMPreference -> setOnPageMPreferenceClickListener(base)
-                else -> base.setOnMPreferenceClickListener {
-                    listener.invoke(it)
-                }
+                else -> base.setOnMPreferenceClickListener { listener.invoke(it) }
+            }
+        }
+    }
+
+    /**
+     * 递归设置值修改事件
+     */
+    private fun setOnChangeListener(list: List<BaseMPreference>, listener: (BaseMPreference) -> Unit) {
+        list.forEach { base ->
+            when (base) {
+                //Category必须在Page前面，因为二者有继承关系
+                is CategoryMPreference -> setOnChangeListener(base.content, listener)
+                else -> base.setOnMPreferenceChangeListener { listener.invoke(it) }
             }
         }
     }
