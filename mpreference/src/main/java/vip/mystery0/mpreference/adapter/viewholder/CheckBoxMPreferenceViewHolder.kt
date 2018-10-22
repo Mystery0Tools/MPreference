@@ -12,6 +12,7 @@ import vip.mystery0.mpreference.impl.CheckBoxMPreference
 
 class CheckBoxMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPreferenceViewHolder<CheckBoxMPreference>(layoutInflater.inflate(R.layout.layout_mpreference_check_box, null)) {
     override fun onLayout(context: Context, config: MPreferenceConfig, base: CheckBoxMPreference) {
+        super.onLayout(context, config, base)
         val textViewTitle = view.findViewById<TextView>(R.id.textViewTitle)
         val textViewSummary = view.findViewById<TextView>(R.id.textViewSummary)
         val checkBox = view.findViewById<CheckBox>(R.id.checkbox)
@@ -23,6 +24,7 @@ class CheckBoxMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPrefe
     }
 
     override fun onSetListener(base: CheckBoxMPreference) {
+        super.onSetListener(base)
         val checkBox = view.findViewById<CheckBox>(R.id.checkbox)
         checkBox.setOnCheckedChangeListener { _, isChecked ->
             base.isChecked = isChecked
@@ -31,6 +33,7 @@ class CheckBoxMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPrefe
     }
 
     override fun onEnable(config: MPreferenceConfig) {
+        super.onEnable(config)
         val textViewTitle = view.findViewById<TextView>(R.id.textViewTitle)
         val textViewSummary = view.findViewById<TextView>(R.id.textViewSummary)
         val checkBox = view.findViewById<CheckBox>(R.id.checkbox)
@@ -40,6 +43,7 @@ class CheckBoxMPreferenceViewHolder(layoutInflater: LayoutInflater) : BaseMPrefe
     }
 
     override fun onDisable(config: MPreferenceConfig) {
+        super.onDisable(config)
         val textViewTitle = view.findViewById<TextView>(R.id.textViewTitle)
         val textViewSummary = view.findViewById<TextView>(R.id.textViewSummary)
         val checkBox = view.findViewById<CheckBox>(R.id.checkbox)

@@ -25,10 +25,8 @@ class MPreferenceAdapter(private val context: Context, private val list: List<Ba
         val preference = list[position]
         val holderClass = preference.javaClass.getAnnotation(DeclareMPreference::class.java)!!.bindMPreferenceViewHolder.java
         if (holder.javaClass == holderClass) {
-            val layoutFunction = holderClass.getMethod("layout", Context::class.java, MPreferenceConfig::class.java, BaseMPreference::class.java)
-            val onSetListenerFunction = holderClass.getMethod("setListener", BaseMPreference::class.java)
+            val layoutFunction = holderClass.getMethod("generateView", Context::class.java, MPreferenceConfig::class.java, BaseMPreference::class.java)
             layoutFunction.invoke(holder, context, config, preference)
-            onSetListenerFunction.invoke(holder, preference)
         }
     }
 

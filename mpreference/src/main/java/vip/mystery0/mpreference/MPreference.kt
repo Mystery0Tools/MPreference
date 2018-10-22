@@ -25,6 +25,8 @@ class MPreference : RecyclerView {
     private val showList = ArrayList<BaseMPreference>()
     private val config = MPreferenceConfig().init(context)
     private val adapter = MPreferenceAdapter(context, showList, config)
+    private var clickListener: (BaseMPreference) -> Unit = {}
+    private var changeListener: (BaseMPreference) -> Unit = {}
 
     private var tempPageMPreference: PageMPreference? = null
 
@@ -40,7 +42,6 @@ class MPreference : RecyclerView {
         if (config.showDivider) addItemDecoration(DividerItemDecoration(context, LinearLayout.VERTICAL))
         layoutManager = LinearLayoutManager(context)
         setAdapter(adapter)
-        setEmptyMPreferenceClickListener()
         setBackgroundColor(config.backgroundColor)
     }
 
@@ -114,7 +115,7 @@ class MPreference : RecyclerView {
                 }
                 XmlPullParser.END_TAG -> {
                     val tagName = pullParser.name
-                    if (tagName == PageMPreference::class.java.simpleName || tagName == CategoryMPreference::class.java.simpleName) {
+                    if (tagName == PageMPreference::class.java.simpleName || tagName == CategoryMPreference::class.java.simpleName || tagName == PageNextMPreference::class.java.simpleName) {
                         tempPageMPreference = tempPageMPreference?.root
                     }
                 }
@@ -176,7 +177,7 @@ class MPreference : RecyclerView {
             showList.addAll(list)
             adapter.notifyDataSetChanged()
         }
-        setEmptyMPreferenceClickListener()
+        updateListener()
     }
 
     fun find(id: String): BaseMPreference = find(id, rootMPreference.content)
@@ -193,13 +194,25 @@ class MPreference : RecyclerView {
         return null
     }
 
-    fun indexOf(baseMPreference: BaseMPreference): Int = showList.indexOf(baseMPreference)
-
     fun setOnItemClickListener(id: String, listener: (BaseMPreference) -> Unit) = find(id).setOnMPreferenceClickListener(listener)
 
     fun setOnItemValueChangeListener(id: String, listener: (BaseMPreference) -> Unit) = find(id).setOnMPreferenceChangeListener(listener)
 
-    fun setOnClickListener(listener: (BaseMPreference) -> Unit) = setOnClickListener(showList, listener)
+    fun setOnClickListener(listener: (BaseMPreference) -> Unit) {
+        clickListener = listener
+    }
+
+    fun setOnValueChangeListener(listener: (BaseMPreference) -> Unit) {
+        changeListener = listener
+    }
+
+    private fun updateListener() {
+        setOnClickListener(showList, clickListener)
+        showList.forEach { base -> base.setOnMPreferenceChangeListener { changeListener.invoke(base) } }
+    }
+
+    fun update() {
+    }
 
     /**
      * 递归设置点击事件
@@ -210,14 +223,12 @@ class MPreference : RecyclerView {
                 //Category必须在Page前面，因为二者有继承关系
                 is CategoryMPreference -> setOnClickListener(base.content, listener)
                 is PageMPreference -> setOnPageMPreferenceClickListener(base)
-                else -> base.setOnMPreferenceClickListener { listener.invoke(it) }
+                else -> base.setOnMPreferenceClickListener {
+                    listener.invoke(it)
+                }
             }
         }
     }
-
-    fun setOnValueChangeListener(listener: (BaseMPreference) -> Unit) = showList.forEach { base -> base.setOnMPreferenceChangeListener { listener.invoke(base) } }
-
-    private fun setEmptyMPreferenceClickListener() = setOnClickListener { }
 
     private fun setOnPageMPreferenceClickListener(baseMPreference: PageMPreference) {
         baseMPreference.setOnMPreferenceClickListener {

@@ -14,6 +14,7 @@ import vip.mystery0.mpreference.util.DensityTools
 
 class CategoryMPreferenceViewHolder(private val layoutInflater: LayoutInflater) : BaseMPreferenceViewHolder<CategoryMPreference>(layoutInflater.inflate(R.layout.layout_mpreference_category, null)) {
     override fun onLayout(context: Context, config: MPreferenceConfig, base: CategoryMPreference) {
+        super.onLayout(context, config, base)
         view.setPadding(0, 0, 0, 0)
         val textViewCategory = view.findViewById<TextView>(R.id.textViewCategory)
         val contentLinearLayout = view.findViewById<LinearLayout>(R.id.contentLinearLayout)
@@ -25,20 +26,9 @@ class CategoryMPreferenceViewHolder(private val layoutInflater: LayoutInflater) 
         base.content.forEach {
             val holderClass = it.javaClass.getAnnotation(DeclareMPreference::class.java)!!.bindMPreferenceViewHolder.java
             val holderInstance = holderClass.getDeclaredConstructor(LayoutInflater::class.java).newInstance(layoutInflater)
-            val layoutFunction = holderClass.getMethod("layout", Context::class.java, MPreferenceConfig::class.java, BaseMPreference::class.java)
-            val onInterfaceFunction = holderClass.getMethod("setListener", BaseMPreference::class.java)
+            val layoutFunction = holderClass.getMethod("generateView", Context::class.java, MPreferenceConfig::class.java, BaseMPreference::class.java)
             layoutFunction.invoke(holderInstance, context, config, it)
-            onInterfaceFunction.invoke(holderInstance, it)
             contentLinearLayout.addView(holderInstance.view)
         }
-    }
-
-    override fun onSetListener(base: CategoryMPreference) {
-    }
-
-    override fun onEnable(config: MPreferenceConfig) {
-    }
-
-    override fun onDisable(config: MPreferenceConfig) {
     }
 }

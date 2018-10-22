@@ -18,8 +18,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        preference.isFocusable = true
-        preference.isFocusableInTouchMode = true
         preference.parseAssertResource("pre.xml")
         preference.setOnClickListener { preference ->
             Log.i("TAG", "click: ${preference.title}")
@@ -27,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         preference.setOnValueChangeListener {  preference ->
             Log.i("TAG", "change: ${preference.title}")
         }
+        preference.update()
 
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show()

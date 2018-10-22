@@ -38,6 +38,7 @@ class MPreferenceConfig {
         preferenceList.add(TextMPreference::class.java)
         preferenceList.add(CategoryMPreference::class.java)
         preferenceList.add(NextMPreference::class.java)
+        preferenceList.add(PageNextMPreference::class.java)
     }
 
     fun init(context: Context): MPreferenceConfig {
