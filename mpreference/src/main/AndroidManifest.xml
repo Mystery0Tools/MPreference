@@ -1,2 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="vip.mystery0.mpreference"/>
+          package="vip.mystery0.mpreference">
+
+    <application>
+        <activity
+            android:name=".ui.MPreferenceActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+    </application>
+
+</manifest>

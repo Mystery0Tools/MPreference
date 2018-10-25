@@ -1,6 +1,8 @@
 package vip.mystery0.mpreference
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Message
@@ -20,13 +22,15 @@ import vip.mystery0.mpreference.mpreferenceAnnotation.DeclareMPreference
 import java.io.InputStream
 
 class MPreference : RecyclerView {
-    private lateinit var rootMPreference: PageMPreference
+    lateinit var rootMPreference: PageMPreference
+        private set
     private lateinit var nowPageMPreference: PageMPreference
     private val showList = ArrayList<BaseMPreference>()
     private val config = MPreferenceConfig().init(context)
     private val adapter = MPreferenceAdapter(context, showList, config)
     private var clickListener: (BaseMPreference) -> Unit = {}
     private var changeListener: (BaseMPreference) -> Unit = {}
+    private lateinit var titleChangeListener: (String) -> Unit
 
     private var tempPageMPreference: PageMPreference? = null
 
@@ -44,6 +48,8 @@ class MPreference : RecyclerView {
         setAdapter(adapter)
         setBackgroundColor(config.backgroundColor)
     }
+
+    fun isInit(): Boolean = ::rootMPreference.isInitialized
 
     fun parseAssertResource(fileName: String, addOneByOne: Boolean = true, parseInThread: Boolean = true) {
         parseInputStream(context.assets.open(fileName), addOneByOne, parseInThread)
@@ -153,6 +159,10 @@ class MPreference : RecyclerView {
         return base
     }
 
+    fun addOnTitleChangeListener(listener: (String) -> Unit) {
+        this.titleChangeListener = listener
+    }
+
     fun back(): Boolean {
         if (!::nowPageMPreference.isInitialized) throw RuntimeException("nowPageMPreference is not initialized.")
         if (nowPageMPreference.root == null) return false
@@ -166,6 +176,7 @@ class MPreference : RecyclerView {
     fun setList(array: Array<BaseMPreference>, addOneByOne: Boolean = true) = setList(array.asList(), addOneByOne)
 
     fun setList(list: List<BaseMPreference>, addOneByOne: Boolean = true) {
+        if (::titleChangeListener.isInitialized) titleChangeListener.invoke(nowPageMPreference.title)
         showList.clear()
         adapter.notifyDataSetChanged()
         if (addOneByOne) {
@@ -212,6 +223,7 @@ class MPreference : RecyclerView {
     }
 
     fun update() {
+        setList(rootMPreference.content)
     }
 
     /**
@@ -245,6 +257,12 @@ class MPreference : RecyclerView {
         baseMPreference.setOnMPreferenceClickListener {
             setList(baseMPreference.content)
             nowPageMPreference = baseMPreference
+        }
+    }
+
+    companion object {
+        fun intentToByView(context: Context, uri: String) {
+            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(uri)))
         }
     }
 }
