@@ -6,7 +6,7 @@ import vip.mystery0.mpreference.R
 
 import kotlinx.android.synthetic.main.activity_mpreference.*
 
-class MPreferenceActivity : AppCompatActivity() {
+open class MPreferenceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mpreference)
