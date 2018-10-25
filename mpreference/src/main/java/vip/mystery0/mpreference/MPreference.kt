@@ -173,6 +173,8 @@ class MPreference : RecyclerView {
         return true
     }
 
+    fun setConfig(listener: (MPreferenceConfig) -> Unit) = listener.invoke(config)
+
     fun setList(array: Array<BaseMPreference>, addOneByOne: Boolean = true) = setList(array.asList(), addOneByOne)
 
     fun setList(list: List<BaseMPreference>, addOneByOne: Boolean = true) {

@@ -21,23 +21,39 @@ abstract class BaseMPreference : MPreferenceClickable<BaseMPreference>, MPrefere
 
     open fun parseAttribute(context: Context, attributeName: String, attributeValue: String, config: MPreferenceConfig) {
         when (attributeName) {
-            NodeAttributeConstant.ID -> id = attributeValue
-            NodeAttributeConstant.TITLE -> title = attributeValue
-            NodeAttributeConstant.SUMMARY -> summary = attributeValue
+            NodeAttributeConstant.ID -> id = parseString(context, attributeValue)
+            NodeAttributeConstant.TITLE -> title = parseString(context, attributeValue)
+            NodeAttributeConstant.SUMMARY -> summary = parseString(context, attributeValue)
             NodeAttributeConstant.IS_ENABLE -> isEnable = attributeValue == "true"
             NodeAttributeConstant.ICON -> {
                 if (!config.showIcon) return
-                try {
-                    val temp = attributeValue.substring(1).split('/')
-                    val folder = temp[0]
-                    val resourceName = temp[1]
-                    val id = context.resources.getIdentifier(resourceName, folder, context.packageName)
-                    icon = ContextCompat.getDrawable(context, id)
-                } catch (e: Exception) {
-                    throw NullPointerException("cannot find resource called $attributeValue")
-                }
+                icon = parseDrawable(context, attributeValue)
             }
         }
+    }
+
+    fun parseString(context: Context, attributeValue: String): String {
+        try {
+            if (!attributeValue.startsWith("@string/")) return attributeValue
+            return context.getString(parseID(context, attributeValue))
+        } catch (e: Exception) {
+            throw NullPointerException("cannot find resource called $attributeValue")
+        }
+    }
+
+    fun parseDrawable(context: Context, attributeValue: String): Drawable? {
+        try {
+            return ContextCompat.getDrawable(context, parseID(context, attributeValue))
+        } catch (e: Exception) {
+            throw NullPointerException("cannot find resource called $attributeValue")
+        }
+    }
+
+    fun parseID(context: Context, attributeValue: String): Int {
+        val temp = attributeValue.substring(1).split('/')
+        val folder = temp[0]
+        val resourceName = temp[1]
+        return context.resources.getIdentifier(resourceName, folder, context.packageName)
     }
 
     override fun setOnMPreferenceClickListener(listenerMPreference: OnMPreferenceClickListener<BaseMPreference>) {

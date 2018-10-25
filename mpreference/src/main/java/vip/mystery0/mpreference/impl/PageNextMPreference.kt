@@ -16,15 +16,7 @@ open class PageNextMPreference : PageMPreference() {
         when (attributeName) {
             NodeAttributeConstant.NEXT_ICON -> {
                 if (!config.showIcon) return
-                try {
-                    val temp = attributeValue.substring(1).split('/')
-                    val folder = temp[0]
-                    val resourceName = temp[1]
-                    val id = context.resources.getIdentifier(resourceName, folder, context.packageName)
-                    nextDrawable = ContextCompat.getDrawable(context, id)
-                } catch (e: Exception) {
-                    throw NullPointerException("cannot find resource called $attributeValue")
-                }
+                nextDrawable = parseDrawable(context, attributeValue)
             }
             else -> super.parseAttribute(context, attributeName, attributeValue, config)
         }
